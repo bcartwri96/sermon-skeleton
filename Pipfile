@@ -10,6 +10,11 @@ name = "pypi"
 flask = "*"
 requests = "*"
 flask-sqlalchemy = "*"
+"psycopg2" = "*"
+sqlalchemy-utils = "*"
+flask-login = "*"
+flask-wtf = "*"
+werkzeug = "*"
 
 
 [dev-packages]

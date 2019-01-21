@@ -1,0 +1,8 @@
+{% include "layout.html" %}
+
+<h1>Login here!</h1>
+<form method="POST" action="{{ url_for('login') }}">
+    {{ form.csrf_token }}
+    {{ form.pw.label }} {{ form.pw }}
+    <input type="submit" value="Go">
+</form>

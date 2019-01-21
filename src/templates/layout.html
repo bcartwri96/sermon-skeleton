@@ -1,0 +1,49 @@
+<!-- this layout is copied from the recommended starter template in the
+official bootstrap docs here:
+https://getbootstrap.com/docs/4.1/getting-started/introduction/ -->
+
+<!-- Other things we're using in this project which we should mention
+include the following:
+* Bootstrap: using it for frontend prettiness. It's a popular tool
+  that you should be familiar with if you're able to see this
+  comment anyway. Link: getbootstrap.com
+* Google Material Icon fonts: they're a really extensive bunch of
+  ways of expressing what an action will do without having to
+  write it out. Link: https://material.io/icons
+* jQuery: it's a Javascript library which we'll use with
+  Bootstrap and independently to build something with
+  pretty and responsive animations. Link: jquery.com
+* Random people on StackOverflow: thanks for your contributions.
+  We'll reference you as we use your work :)
+-->
+<!doctype html>
+<html lang="en">
+  {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+      <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.js') }}">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link id="pagestyle" rel"stylesheet" type="text/css" href="large.css">
+
+    <link rel="stylesheet" type="text/css" media="media screen and (max-width:780px)" href="media query.css">
+
+    <!-- add the bootstrap toggle plugin -->
+    <!-- <link href="{{ url_for('static', filename='bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js') }}"></script> -->
+
+  {% endblock head %}
+  {% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+</html>

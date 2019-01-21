@@ -1,8 +1,33 @@
 from flask import Flask
-import controllers as cn
+import sqlalchemy as sa
+import src.controllers as cn
+import src.models.db as db
+import flask_login as login
+import os
 
 app = Flask(__name__)
 
+SECRET_KEY = os.urandom(32)
+app.config['SECRET_KEY'] = SECRET_KEY
+
+# produce the login manager
+lm = login.LoginManager()
+lm.init_app(app)
+
 @app.route("/")
-def hello():
+@login.login_required
+def index():
     return cn.index.main()
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return cn.login.auth()
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
+
+@lm.user_loader
+def load_user(user_id):
+    from src.models.models import User
+    return User.query.get(user_id)
