@@ -1,0 +1,12 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+Here is some text!
+
+<form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.thumb.label }} {{ form.thumb }}
+    <input type="submit" value="Go">
+</form>
+
+saved to: {{ loc }}

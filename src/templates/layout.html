@@ -24,19 +24,13 @@ include the following:
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-      <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
-      <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-      <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.js') }}">
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.js') }}">
+    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
 
     <link id="pagestyle" rel"stylesheet" type="text/css" href="large.css">
-
-    <link rel="stylesheet" type="text/css" media="media screen and (max-width:780px)" href="media query.css">
-
-    <!-- add the bootstrap toggle plugin -->
-    <!-- <link href="{{ url_for('static', filename='bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css') }}" rel="stylesheet">
-    <script src="{{ url_for('static', filename='bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js') }}"></script> -->
 
   {% endblock head %}
   {% with messages = get_flashed_messages() %}

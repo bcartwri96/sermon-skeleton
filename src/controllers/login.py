@@ -1,7 +1,7 @@
 #defines the logging in and out process
 import flask as fl
 from src.forms.index import Login
-from flask_login import login_user
+from flask_login import login_user, logout_user
 from src.models.models import User
 
 def auth():
@@ -21,3 +21,7 @@ def auth():
         else:
             fl.flash(str(form.errors))
             return fl.render_template("login/in.html", form=form)
+
+def out():
+    logout_user()
+    return fl.redirect(fl.url_for('index'))

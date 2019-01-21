@@ -22,6 +22,23 @@ class User(Base):
     def is_authenticated(self):
         return True
 
+    def is_admin(self):
+        if is_authenticated:
+            return True
+        else:
+            return False
+
     def get_id(self):
         # note this is unicode, because python3 is by default.
         return self.id
+
+
+class Sermons(Base):
+    __tablename__ = 'sermons'
+    id = Column(Integer, primary_key=True)
+    file_loc = Column(String(250), unique=True)
+    thumbnail = Column(String(250))
+
+    def __init__(self, file_loc=None):
+        self.file_loc = file_loc
+        self.thumbnail = thumbnail
