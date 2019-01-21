@@ -4,12 +4,19 @@ import src.controllers as cn
 import src.models.db as db
 import flask_login as login
 import os
+import configparser as cfg
 
 app = Flask(__name__)
 
+# config
+config = cfg.ConfigParser()
+config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
+                  'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/'}
+with open('config.ini', 'w') as conf:
+    config.write(conf)
+
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config.from_pyfile('config.cfg')
 
 # produce the login manager
 lm = login.LoginManager()

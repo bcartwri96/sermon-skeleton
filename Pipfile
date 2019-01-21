@@ -17,6 +17,7 @@ flask-wtf = "*"
 werkzeug = "*"
 flask-assets = "*"
 flask-uploads = "*"
+configparser = "*"
 
 
 [dev-packages]
