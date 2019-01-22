@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "097d673f8b24de0e4df96d36611ce1e46c4baf7a70cd0e5ead2ff808aacc7372"
+            "sha256": "729186d52b385db1789629b804270303cf2d6292e59fec540cf0be40562aca87"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -53,6 +53,13 @@
                 "sha256:5308b47021bc2340965c371f0f058cc6971a04502638d4244225c49d80db273a"
             ],
             "version": "==3.5.0"
+        },
+        "django": {
+            "hashes": [
+                "sha256:a32c22af23634e1d11425574dce756098e015a165be02e4690179889b207c7a8",
+                "sha256:d6393918da830530a9516bbbcbf7f1214c3d733738779f06b0f649f49cc698c3"
+            ],
+            "version": "==2.1.5"
         },
         "flask": {
             "hashes": [
@@ -181,6 +188,13 @@
                 "sha256:27959abe64ca1fc6d8cd11a71a1f421d8287831a3262bd4cacd43bbf43cc3c82"
             ],
             "version": "==2.7.6.1"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9",
+                "sha256:d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"
+            ],
+            "version": "==2018.9"
         },
         "requests": {
             "hashes": [

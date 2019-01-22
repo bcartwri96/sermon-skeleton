@@ -18,6 +18,7 @@ werkzeug = "*"
 flask-assets = "*"
 flask-uploads = "*"
 configparser = "*"
+django = "*"
 
 
 [dev-packages]

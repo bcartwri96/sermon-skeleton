@@ -3,6 +3,8 @@ from requests.auth import HTTPBasicAuth
 import json
 import configparser as cp
 import os
+from src.models.db import session
+import flask as fl
 
 # get conf
 cfg = cp.ConfigParser()
@@ -58,9 +60,51 @@ class Podbean:
             return req.text
             #TODO: deal with errors gracefully
 
-        def publish_episode(self, file_key):
-            pass
+    def publish_sermon(self, file_key, title, content, logo_key):
+        # this takes the temp file uploaded and binds it with important
+        # metadata to produce an actual podcast
+        url = "https://api.podbean.com/v1/episodes"
+        payload = {}
 
+        # fill the payload
+        payload["access_token"] = self.access_token
+        payload["title"] = title
+        payload["content"] = content
+        payload["status"] = "publish"
+        payload["type"] = "public"
+        payload["media_key"] = file_key
+        if logo_key:
+            payload["logo_key"] = logo_key
+
+        # make the request
+        resp = r.post(url, data=payload)
+        print(resp.text)
+
+        # receive the episode object and then store the episode in
+        # with the database
+        if resp.status_code == 200:
+            resp = resp.json()
+
+            pod_id = resp["id"]
+            pod_media_url = resp["media_url"]
+            pod_logo_url = resp["logo"]
+
+            sermon = Sermons(title=title, \
+            pod_id=pod_id, \
+            pod_media_url=pod_media_url, \
+            pod_logo_url=pod_logo_url)
+
+            session.add(sermon)
+            try:
+                session.commit()
+                fl.flash("Successfully published the new episode!")
+            except KeyError:
+                fl.flash("We were unable to publish at the episode at this\
+                 time.")
+            return fl.redirect(fl.url_for('upload'))
+        else:
+            fl.flash("unable to publish the episode.")
+            return fl.redirect(fl.url_for('upload'))
 
 def init(client_id, secret):
     # provide client id and secret, authenticate you with your app

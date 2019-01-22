@@ -1,12 +1,13 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
-Here is some text!
-
 <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
     {{ form.csrf_token }}
-    {{ form.thumb.label }} {{ form.thumb }}
-    <input type="submit" value="Go">
+    {{ form.title.label}} {{ form.title }}<br>
+    {{ form.thumb.label }} {{ form.thumb }}<br>
+    {{ form.date_given.label }} {{ form.date_given }}<br>
+    {{ form.sermon.label }} {{ form.sermon }}<br>
+    <input type="submit" value="Upload">
 </form>
 
 saved to: {{ loc }}

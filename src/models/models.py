@@ -1,5 +1,5 @@
 from src.models.db import Base as Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date
 
 class User(Base):
     __tablename__ = 'users'
@@ -36,9 +36,20 @@ class User(Base):
 class Sermons(Base):
     __tablename__ = 'sermons'
     id = Column(Integer, primary_key=True)
-    file_loc = Column(String(250), unique=True)
-    thumbnail = Column(String(250))
+    title = Column(String(250), unique=True)
+    tmp_thumbnail = Column(String(250))
+    tmp_media = Column(String(250))
+    pod_id = Column(String(100), unique=True)
+    pod_media_url = Column(String(100), unique=True)
+    pod_logo_url = Column(String(100), unique=True)
+    date_given = Column(Date)
 
-    def __init__(self, file_loc=None):
-        self.file_loc = file_loc
-        self.thumbnail = thumbnail
+
+    def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None):
+        self.title = title
+        self.tmp_thumbnail = tmp_thumbnail
+        self.tmp_media = tmp_media
+        self.pod_id = pod_id
+        self.pod_media_url = pod_media_url
+        self.pod_logo_url = pod_logo_url
+        self.date_given = date_given
