@@ -26,6 +26,23 @@ class Podbean:
         self.access_token = 'abcd'
         return True
 
+    def get_sermons(self, limit):
+        url = "https://api.podbean.com/v1/episodes"
+
+        payload = {}
+        payload['access_token'] = self.access_token
+        payload['limit'] = limit
+
+        resp = r.get(url, data=payload)
+
+        if resp.status_code == 200:
+            # we've got them! parse as json
+            eps = resp.json()
+            return eps
+        else:
+            print(resp.text)
+            return False
+            
     def upload_sermon(self, audio):
         # uploads the sermon to the podbean temporarily!
         # NOTE: NOT the publishing of a new episode!
@@ -55,12 +72,23 @@ class Podbean:
         resp = req.json()
         if req.status_code == 200:
             file_key = resp["file_key"]
-            return file_key
+            presigned_url = resp["presigned_url"]
+
+            headers = {}
+            payload = {}
+            payload['media'] = file_loc
+            headers['Content-Type'] = 'audio/mpeg'
+            resp = r.put(presigned_url, data=payload, headers=headers)
+
+            if resp.status_code == 200:
+                return presigned_url
+            else:
+                return resp.text
         else:
             return req.text
             #TODO: deal with errors gracefully
 
-    def publish_sermon(self, file_key, title, content, logo_key):
+    def publish_sermon(self, url, title, content, logo_key):
         # this takes the temp file uploaded and binds it with important
         # metadata to produce an actual podcast
         url = "https://api.podbean.com/v1/episodes"
@@ -72,7 +100,7 @@ class Podbean:
         payload["content"] = content
         payload["status"] = "publish"
         payload["type"] = "public"
-        payload["media_key"] = file_key
+        payload["media_key"] = url
         if logo_key:
             payload["logo_key"] = logo_key
 

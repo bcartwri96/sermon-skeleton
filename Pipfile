@@ -19,6 +19,8 @@ flask-assets = "*"
 flask-uploads = "*"
 configparser = "*"
 django = "*"
+celery = {extras = ["redis"]}
+flask-mail = "*"
 
 
 [dev-packages]
