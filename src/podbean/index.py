@@ -58,7 +58,7 @@ class Podbean:
             print(resp.text)
             return False
 
-    def upload_sermon(self, audio):
+    def auth_upload(self, audio):
         # uploads the sermon to the podbean temporarily!
         # NOTE: NOT the publishing of a new episode!
         # returns only *temporary* file_key
@@ -69,7 +69,7 @@ class Podbean:
         payload['filename'] = audio
 
         # get the file
-        file_loc = upload_loc+audio
+        file_loc = audio #upload_loc+audio
         with open(file_loc, 'rb+') as file:
             #note, os.stat returns bytes
             payload['filesize'] = os.stat(file_loc).st_size
@@ -88,36 +88,40 @@ class Podbean:
         if req.status_code == 200:
             file_key = resp["file_key"]
             presigned_url = resp["presigned_url"]
+            return [presigned_url, file_key]
 
-            headers = {}
-            payload = {}
-            payload['media'] = file_loc
-            headers['Content-Type'] = 'audio/mpeg'
-            resp = r.put(presigned_url, data=payload, headers=headers)
-
-            if resp.status_code == 200:
-                return presigned_url
-            else:
-                return resp.text
         else:
-            return req.text
+            return False
+            print(req.text)
             #TODO: deal with errors gracefully
 
-    def publish_sermon(self, url, title, content, logo_key):
+    def upload_sermon(self, url, media_key):
+        head = {'Content-Type':'audio/mpeg'}
+        files = {'file': media_key}
+
+        res = r.put(url, headers=head, files=files)
+
+        if res.status_code == 200:
+            return True
+        else:
+            return False
+
+
+    def publish_sermon(self, title, content, media_key, logo_key):
         # this takes the temp file uploaded and binds it with important
         # metadata to produce an actual podcast
         url = "https://api.podbean.com/v1/episodes"
         payload = {}
 
         # fill the payload
-        payload["access_token"] = self.access_token
-        payload["title"] = title
-        payload["content"] = content
-        payload["status"] = "publish"
-        payload["type"] = "public"
-        payload["media_key"] = url
+        payload['access_token'] = str(self.access_token)
+        payload['title'] = str(title)
+        payload['content'] = str(content)
+        payload['status'] = "publish"
+        payload['type'] = "public"
+        payload['media_key'] = str(media_key)
         if logo_key:
-            payload["logo_key"] = logo_key
+            payload['logo_key'] = str(logo_key)
 
         # make the request
         resp = r.post(url, data=payload)
@@ -126,28 +130,20 @@ class Podbean:
         # receive the episode object and then store the episode in
         # with the database
         if resp.status_code == 200:
-            resp = resp.json()
+            resp = resp.json()['episode'] # is sent as an 'episode' obj, so
+            # just filter out garbage
 
             pod_id = resp["id"]
             pod_media_url = resp["media_url"]
             pod_logo_url = resp["logo"]
 
-            sermon = Sermons(title=title, \
-            pod_id=pod_id, \
-            pod_media_url=pod_media_url, \
-            pod_logo_url=pod_logo_url)
-
-            session.add(sermon)
             try:
-                session.commit()
-                fl.flash("Successfully published the new episode!")
+                return [pod_id, pod_media_url, pod_logo_url]
             except KeyError:
-                fl.flash("We were unable to publish at the episode at this\
-                 time.")
-            return fl.redirect(fl.url_for('upload'))
+                return [False]
+            return [False]
         else:
-            fl.flash("unable to publish the episode.")
-            return fl.redirect(fl.url_for('upload'))
+            return [False]
 
 def init(client_id, secret):
     # provide client id and secret, authenticate you with your app

@@ -36,7 +36,7 @@ def index():
     print("Working...")
     # add_task.delay(1,1)
     print("Done?")
-    return cn.index.show_eps()
+    return cn.index.main()
 
 @app.route("/upload", methods=['GET', 'POST'])
 @login.login_required
