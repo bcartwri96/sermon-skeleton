@@ -13,6 +13,9 @@ include the following:
 * jQuery: it's a Javascript library which we'll use with
   Bootstrap and independently to build something with
   pretty and responsive animations. Link: jquery.com
+* The JS Lazyload Plugin: very useful indeed, used to load images
+  after the page itself loads, only after the image enters the
+  viewport.
 * Random people on StackOverflow: thanks for your contributions.
   We'll reference you as we use your work :)
 -->
@@ -29,8 +32,12 @@ include the following:
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.js') }}">
     <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" charset="utf-8"></script>
+    <script src="{{ url_for('static', filename='js/lazyload.js') }}"type="text/javascript"></script>
 
     <link id="pagestyle" rel"stylesheet" type="text/css" href="large.css">
+
+    <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="https://www.eso.org/public/archives/images/large/eso1208a.jpg" width="765" height="574">
 
   {% endblock head %}
   {% with messages = get_flashed_messages() %}
@@ -40,4 +47,5 @@ include the following:
       {% endfor %}
    {% endif %}
 {% endwith %}
+
 </html>

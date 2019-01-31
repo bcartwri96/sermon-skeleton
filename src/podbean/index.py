@@ -26,14 +26,29 @@ class Podbean:
         self.access_token = 'abcd'
         return True
 
+    def get_podcasts(self):
+        url = "https://api.podbean.com/v1/podcasts"
+
+        payload = {}
+        payload['access_token'] = self.access_token
+
+        res = r.get(url, params=payload)
+
+        if res.status_code == 200:
+            return res.json()
+        else:
+            print(res.text)
+            return False
+
     def get_sermons(self, limit):
         url = "https://api.podbean.com/v1/episodes"
 
         payload = {}
         payload['access_token'] = self.access_token
         payload['limit'] = limit
+        payload['offset'] = 0
 
-        resp = r.get(url, data=payload)
+        resp = r.get(url, params=payload)
 
         if resp.status_code == 200:
             # we've got them! parse as json
@@ -42,7 +57,7 @@ class Podbean:
         else:
             print(resp.text)
             return False
-            
+
     def upload_sermon(self, audio):
         # uploads the sermon to the podbean temporarily!
         # NOTE: NOT the publishing of a new episode!

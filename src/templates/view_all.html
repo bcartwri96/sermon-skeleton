@@ -1,0 +1,51 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+
+<h3 class="display-3">View All Episodes</h3>
+
+<div class="container">
+  <div class="row">
+    {% for ep in eps %}
+    <div class="col-sm">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ def_img }}" width="500">
+      <ul>{{ ep['title'] }}</ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    {% for ep in eps %}
+    <div class="col-sm">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ def_img }}" width="500">
+      <ul>{{ ep['title'] }}</ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    {% for ep in eps %}
+    <div class="col-sm">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ def_img }}" width="765" height="574">
+      <ul>{{ ep['title'] }}</ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    {% for ep in eps %}
+    <div class="col-sm">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ def_img }}" width="765" height="574">
+      <ul>{{ ep['title'] }}</ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    {% for ep in eps %}
+    <div class="col-sm">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ def_img }}" width="765" height="574">
+      <ul>{{ ep['title'] }}</ul>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% include "footer.html" %}
