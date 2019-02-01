@@ -38,10 +38,18 @@ def index():
     print("Done?")
     return cn.index.main()
 
+@app.route("/view")
+def view():
+    return cn.index.show_eps()
+
 @app.route("/upload", methods=['GET', 'POST'])
-@login.login_required
+# @login.login_required
 def upload():
     return cn.upload.up()
+
+@app.route("/task_status/<t_id>")
+def task_status(t_id):
+    return cn.tasks.t_stat(t_id)
 
 # login/out
 

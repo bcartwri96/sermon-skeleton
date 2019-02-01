@@ -34,14 +34,15 @@ class User(Base):
 
 
 class Sermons(Base):
+    # NOTE in prod, media_url and pod_id need to be unique. enforcable at db
     __tablename__ = 'sermons'
     id = Column(Integer, primary_key=True)
     title = Column(String(250), unique=True)
     tmp_thumbnail = Column(String(250))
     tmp_media = Column(String(250))
-    pod_id = Column(String(100), unique=True)
-    pod_media_url = Column(String(100), unique=True)
-    pod_logo_url = Column(String(100), unique=True)
+    pod_id = Column(String(100))
+    pod_media_url = Column(String(100))
+    pod_logo_url = Column(String(100))
     date_given = Column(Date)
 
 

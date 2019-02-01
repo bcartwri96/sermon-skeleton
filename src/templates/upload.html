@@ -1,6 +1,36 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
+<div class="progress" id="progress"></div>
+<script>
+  // create a progress bar
+  var options = {
+    classname: 'progress',
+    id: 'progress',
+    target: document.getElementById('progress')
+  };
+
+  var nanobar = new Nanobar( options );
+  var status_url = "{{ url_for('task_status', t_id=task_id) }}";
+  var done = false;
+  function update_prog(status_url, nanobar) {
+    $.getJSON(status_url, function(data){
+      if(data['state'] == 'SUCCESS') {
+        done = true;
+      }
+      nanobar.go(data['current']);
+    } );
+  };
+
+  window.setInterval(function(){
+    var a = '{{task_id}}';
+    if(a != 0 && !done) {
+      update_prog(status_url, nanobar);
+    }
+  }, 500);
+</script>
+
 <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
     {{ form.csrf_token }}
     {{ form.title.label}} {{ form.title }}<br>
@@ -10,4 +40,33 @@
     <input type="submit" value="Upload">
 </form>
 
+<script type='text/javascript'>
+
+  function update_progress(status_url, nanobar, status_div) {
+  // send GET request to status URL
+  $.getJSON(status_url, function(data) {
+      // update UI
+      percent = parseInt(data['current'] * 100 / data['total']);
+      nanobar.go(percent);
+      $(status_div.childNodes[1]).text(percent + '%');
+      $(status_div.childNodes[2]).text(data['status']);
+      if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
+          if ('result' in data) {
+              // show result
+              $(status_div.childNodes[3]).text('Result: ' + data['result']);
+          }
+          else {
+              // something unexpected happened
+              $(status_div.childNodes[3]).text('Result: ' + data['state']);
+          }
+      }
+      else {
+          // rerun in 2 seconds
+          setTimeout(function() {
+              update_progress(status_url, nanobar, status_div);
+          }, 2000);
+      }
+  });
+}
+</script>
 saved to: {{ loc }}
