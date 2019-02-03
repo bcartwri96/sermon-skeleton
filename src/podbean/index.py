@@ -58,18 +58,18 @@ class Podbean:
             print(resp.text)
             return False
 
-    def auth_upload(self, audio):
+    def auth_upload(self, resource, type):
         # uploads the sermon to the podbean temporarily!
         # NOTE: NOT the publishing of a new episode!
         # returns only *temporary* file_key
 
         payload = {}
         payload['access_token'] = self.access_token
-        payload['content_type'] = "audio/mpeg"
-        payload['filename'] = audio
+        payload['content_type'] = type #"audio/mpeg"
+        payload['filename'] = resource
 
         # get the file
-        file_loc = audio #upload_loc+audio
+        file_loc = resource #upload_loc+audio
         with open(file_loc, 'rb+') as file:
             #note, os.stat returns bytes
             payload['filesize'] = os.stat(file_loc).st_size
@@ -95,8 +95,8 @@ class Podbean:
             print(req.text)
             #TODO: deal with errors gracefully
 
-    def upload_sermon(self, url, media_key):
-        head = {'Content-Type':'audio/mpeg'}
+    def upload_resource(self, url, media_key, type):
+        head = {'Content-Type':type}
         files = {'file': media_key}
 
         res = r.put(url, headers=head, files=files)
@@ -144,6 +144,21 @@ class Podbean:
             return [False]
         else:
             return [False]
+
+    def read_sermon(self, id):
+        payload = {
+            'access_token': self.access_token
+        }
+
+        url = "https://api.podbean.com/v1/episodes/"+str(id)
+
+        res = r.get(url, params=payload)
+
+        if res.status_code == 200:
+            return res.json()
+        else:
+            print(res.text)
+            return False
 
 def init(client_id, secret):
     # provide client id and secret, authenticate you with your app

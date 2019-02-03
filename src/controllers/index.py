@@ -16,10 +16,14 @@ def show_eps():
     cl_sc = scripts.get_env_variable('CLIENT_SEC')
 
     p = podbean.init(cl_id, cl_sc)
-    all = p.get_sermons(100)
+    all = p.get_sermons(100)['episodes']
 
     # get the image link too, because it's missing!
     podcast = p.get_podcasts()
     def_img = podcast['podcasts'][0]['logo']
 
-    return fl.render_template('view_all.html', eps=all['episodes'], def_img=def_img)
+    # replace with the def_img if there isn't an uploaded image
+    for i in range(0, len(all), 1):
+        if all[i]['logo'] == None:
+            all[i]['logo'] = def_img
+    return fl.render_template('view_all.html', eps=all)
