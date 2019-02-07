@@ -1,0 +1,82 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+<script src="{{ url_for('static', filename='js/amplitude/dist/amplitude.js' )}}"></script>
+
+
+<!--
+	Include UX functions JS
+
+	NOTE: These are for handling things outside of the scope of AmplitudeJS
+-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/amplitude/dist/js/functions.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/amplitude/dist/js/foundation.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/amplitude/dist/js/functions.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/amplitude/dist/css/app.css') }}">
+
+<h3 class="display-3">{{ sermon.title }}</h3>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-lg-2"></div>
+    <div class="col-md-auto">
+      <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-12 small-12 cell">
+          <div id="single-song-player">
+            <img data-amplitude-song-info="cover_art_url"/>
+            <div class="bottom-container">
+              <progress class="amplitude-song-played-progress" id="song-played-progress"></progress>
+
+              <div class="time-container">
+                <span class="current-time">
+                  <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
+                </span>
+                <span class="duration">
+                  <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
+                </span>
+              </div>
+
+              <div class="control-container">
+                <div class="amplitude-play-pause" id="play-pause"></div>
+                <div class="meta-container">
+                  <span data-amplitude-song-info="name" class="song-name"></span>
+                  <span data-amplitude-song-info="artist"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-lg-2"></div>
+  </div>
+</div>
+
+<p>{{ head }}</p>
+
+</div>
+
+<script type="text/javascript">
+  <!-- access control means we need to fetch the url from here -->
+
+  init_media = $.get("{{ sermon.pod_media_url }}");
+  resp_media_url = init_media.getResponseHeader('Location');
+  if (resp_media_url != null) {
+    console.log(resp_media_url);
+  }
+
+
+  Amplitude.init({
+    "songs": [
+      {
+        "name": "Risin' High (feat Raashan Ahmad)",
+        "artist": "Ancient Astronauts",
+        "album": "We Are to Answer",
+        "url": "{{ sermon.tmp_media }}",
+        "cover_art_url": "{{ sermon.pod_logo_url }}"
+      }
+    ]
+  });
+</script>
+<div style="margin-top: 20px;"></div>
+{% include "footer.html" %}

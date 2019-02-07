@@ -27,7 +27,7 @@ def up():
             fname_thumb = os.path.join(upload_loc, filename)
             # todo: pls ensure this gracefully fails!
             # f.save(fname_thumb)
-            save_to_disk(f, fname_thumb)
+            save_to_disk.delay(f, fname_thumb)
 
             # upload to server first
             f = fl.request.files['sermon']
@@ -37,7 +37,7 @@ def up():
             fname_media = os.path.join(upload_loc, filename)
             # todo: ensure this gracefully fails!
             # f.save(fname_media)
-            save_to_disk(f, fname_media)
+            save_to_disk.delay(f, fname_media)
 
             upload = upload_podbean.apply_async(args=[fname_media, title_given, 'content so far', date_given, fname_thumb])
             # init the workers which upload the content to drive and
@@ -49,5 +49,7 @@ def up():
             fl.flash(str(form.errors))
             return fl.render_template('upload.html', form=form)
     else:
-        fl.flash(str(upload_loc))
-        return fl.render_template('upload.html', form=form, task_id=0)
+
+        sermon_series_choices = Sermon_Series.query.all()
+
+        return fl.render_template('upload.html', form=form, task_id=0, choices=sermon_series_choices)

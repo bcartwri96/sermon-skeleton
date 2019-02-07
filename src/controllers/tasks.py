@@ -34,7 +34,6 @@ def upload_podbean(self, filename, title_given, content_given, date_given, fname
     client_sec = get_env_variable('CLIENT_SEC')
     p = pod.init(client_id, client_sec)
     self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Authenticating with server'})
-    time.sleep(30)
     res_up = p.auth_upload(filename, "audio/mpeg")
     self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
     res_up_thumb = p.auth_upload(fname_thumb, "image/png")

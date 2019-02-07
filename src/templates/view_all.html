@@ -5,47 +5,19 @@
 <h3 class="display-3">View All Episodes</h3>
 
 <div class="container">
+  {% for col in sermons | slice(cols) %}
   <div class="row">
-    {% for ep in eps %}
+    {% for sermon in col %}
     <div class="col-sm">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ ep['logo'] }}" width="500">
-      <ul>{{ ep['title'] }}</ul>
+      <a href="{{ url_for('sermon', id=sermon.id) }}">
+      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ sermon.pod_logo_url }}" width="500">
+      <ul>{{ sermon.title }}</ul></a>
     </div>
     {% endfor %}
   </div>
-  <div class="row">
-    {% for ep in eps %}
-    <div class="col-sm">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ ep['logo'] }}" width="500">
-      <ul>{{ ep['title'] }}</ul>
-    </div>
-    {% endfor %}
-  </div>
-  <div class="row">
-    {% for ep in eps %}
-    <div class="col-sm">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ ep['logo'] }}" width="765" height="574">
-      <ul>{{ ep['title'] }}</ul>
-    </div>
-    {% endfor %}
-  </div>
-  <div class="row">
-    {% for ep in eps %}
-    <div class="col-sm">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ ep['logo'] }}" width="765" height="574">
-      <ul>{{ ep['title'] }}</ul>
-    </div>
-    {% endfor %}
-  </div>
-  <div class="row">
-    {% for ep in eps %}
-    <div class="col-sm">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ ep['logo'] }}" width="765" height="574">
-      <ul>{{ ep['title'] }}</ul>
-    </div>
-    {% endfor %}
-  </div>
+  {% endfor %}
 </div>
+
 
 
 {% include "footer.html" %}

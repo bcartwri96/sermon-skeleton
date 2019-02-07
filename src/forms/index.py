@@ -1,17 +1,26 @@
 from flask import Flask
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, DateField
+from wtforms import StringField, SubmitField, PasswordField, DateField, SelectField, TextAreaField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, ValidationError
 from datetime import date
+from src.models.models import Sermon_Series
+
+def content_len_check(form, field):
+    if len(field.data) < 5:
+        raise ValidationError("Lenth of description must be >= 5")
 
 class Login(FlaskForm):
     pw = PasswordField('pw', validators=[DataRequired()])
 
 class Upload(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
-    date_given = DateField('date',default=date.today(), format='%d/%m/%Y', validators=[DataRequired(message="You need to enter the start date")])
+    date_given = DateField('date',default=date.today(), \
+    format='%d/%m/%Y', \
+    validators=[DataRequired(message="You need to enter the start date")])
+    sermon_series = SelectField('sermon_series', choices=[(ss.id)(ss.name) for ss in Sermon_Series.query.all()])
+    description = TextAreaField('description', validators=[content_len_check])
     thumb = FileField('thumb', validators=[
         FileAllowed(['jpg', 'png'], 'Only image uploading is permitted.')])
     sermon = FileField('sermon', validators=[

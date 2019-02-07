@@ -1,27 +1,24 @@
 from flask import Flask
+import src.conf as config
+from flask_cors import CORS, cross_origin
+
+app = Flask(__name__)
+CORS(app)
+
+# update config
+config.config.set('MAIN', 'APP_NAME', app.name)
+config.write_config()
+
 import sqlalchemy as sa
+import src.models.db as db
+import flask_login as login
+import os
+import src.celery as cel
 import src.controllers as cn
 # note that atm, controllers needs config already set up before it can
 # do anything, so we exclude the line -> run so config is written, then we
 # allow it back in so controllers can use it.
-import src.models.db as db
-import flask_login as login
-import os
-import configparser as cfg
-import src.celery as cel
 
-app = Flask(__name__)
-
-# config
-config = cfg.ConfigParser()
-config.sections()
-config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
-                  'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
-                  'CELERY_BROKER_URL': 'redis://localhost:6379/0',
-                  'CELERY_RESULT_BACKEND': 'redis://localhost:6379/0',
-                  'APP_NAME': str(app.name)}
-with open('config.ini', 'w') as conf:
-    config.write(conf)
 
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -50,6 +47,11 @@ def upload():
 @app.route("/task_status/<t_id>")
 def task_status(t_id):
     return cn.tasks.t_stat(t_id)
+
+@app.route("/sermon/<int:id>")
+@cross_origin(origin="*")
+def sermon(id):
+    return cn.index.load_sermon(id)
 
 # login/out
 

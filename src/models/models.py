@@ -1,8 +1,11 @@
 from src.models.db import Base as Base
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
+
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
     email = Column(String(120), unique=True)
@@ -36,6 +39,8 @@ class User(Base):
 class Sermons(Base):
     # NOTE in prod, media_url and pod_id need to be unique. enforcable at db
     __tablename__ = 'sermons'
+    __table_args__ = {'extend_existing': True}
+
     id = Column(Integer, primary_key=True)
     title = Column(String(250), unique=True)
     tmp_thumbnail = Column(String(250))
@@ -44,6 +49,8 @@ class Sermons(Base):
     pod_media_url = Column(String(100))
     pod_logo_url = Column(String(100))
     date_given = Column(Date)
+    sermon_series_id = Column(Integer, ForeignKey("sermon_series.id"))
+    sermon_series = relationship("Sermon_Series")
 
 
     def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None):
@@ -54,3 +61,12 @@ class Sermons(Base):
         self.pod_media_url = pod_media_url
         self.pod_logo_url = pod_logo_url
         self.date_given = date_given
+
+class Sermon_Series(Base):
+    __tablename__ = 'sermon_series'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+
+    def __init__(self, id=None, name=None):
+        self.id = id
+        self.name = name
