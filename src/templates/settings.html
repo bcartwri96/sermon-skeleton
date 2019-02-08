@@ -1,0 +1,9 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+<h3 class="display-3">Settings</h3>
+<form method="POST" action="{{ url_for('settings') }}">
+    {{ form.csrf_token }}
+    {{ form.name.label}} {{ form.name }}<br>
+    <input type="submit" value="Submit">
+</form>

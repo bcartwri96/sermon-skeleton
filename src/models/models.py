@@ -35,7 +35,6 @@ class User(Base):
         # note this is unicode, because python3 is by default.
         return self.id
 
-
 class Sermons(Base):
     # NOTE in prod, media_url and pod_id need to be unique. enforcable at db
     __tablename__ = 'sermons'
@@ -53,7 +52,9 @@ class Sermons(Base):
     sermon_series = relationship("Sermon_Series")
 
 
-    def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None):
+    def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, \
+    date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
+    sermon_series=None, sermon_series_id=None):
         self.title = title
         self.tmp_thumbnail = tmp_thumbnail
         self.tmp_media = tmp_media
@@ -61,6 +62,8 @@ class Sermons(Base):
         self.pod_media_url = pod_media_url
         self.pod_logo_url = pod_logo_url
         self.date_given = date_given
+        self.sermon_series = sermon_series
+        self.sermon_series_id = sermon_series_id
 
 class Sermon_Series(Base):
     __tablename__ = 'sermon_series'

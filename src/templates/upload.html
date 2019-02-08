@@ -3,20 +3,32 @@
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
 <div class="progress" id="progress"></div>
+<style>
+  .green {
+    color: green;
+  }
+
+  .red {
+    color: red;
+  }
+</style>
+
 <script>
   // create a progress bar
   var options = {
     classname: 'progress',
     id: 'progress',
-    target: document.getElementById('progress')
+    target: document.getElementById('#progress')
   };
 
   var nanobar = new Nanobar( options );
   var status_url = "{{ url_for('task_status', t_id=task_id) }}";
   var done = false;
+
   function update_prog(status_url, nanobar) {
     $.getJSON(status_url, function(data){
-      if(data['state'] == 'SUCCESS') {
+      var bar = nanobar.el[0];
+      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
         done = true;
       }
       nanobar.go(data['current']);

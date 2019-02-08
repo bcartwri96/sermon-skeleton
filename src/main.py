@@ -63,6 +63,12 @@ def login():
 def logout():
     return cn.login.out()
 
+# settings
+
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    return cn.settings.main()
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()

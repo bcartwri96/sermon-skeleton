@@ -1,5 +1,5 @@
 from src.celery import cel
-from src.models.models import Sermons
+from src.models.models import Sermons, Sermon_Series
 from src.models.db import session
 from src.scripts.index import get_env_variable
 import src.podbean.index as pod
@@ -16,20 +16,9 @@ def add_task(x, y):
     time.sleep(2)
     print("dome some sleeping")
 
-@cel.task
-def save_to_disk(file, name):
-    try:
-        file.save(name)
-        # return True
-    except IOError:
-        # return False
-        pass
-
-
 @cel.task(bind=True)
-def upload_podbean(self, filename, title_given, content_given, date_given, fname_thumb):
+def upload_podbean(self, filename, title_given, content_given, date_given, fname_thumb, ss):
     # send to podbean now
-    print(self)
     client_id = get_env_variable('CLIENT_ID')
     client_sec = get_env_variable('CLIENT_SEC')
     p = pod.init(client_id, client_sec)
@@ -67,6 +56,9 @@ def upload_podbean(self, filename, title_given, content_given, date_given, fname
                 pod_logo_url = res[2]
                 # write this to the database
 
+                # get the object for the sermon series
+                ss = Sermon_Series.query.get(ss)
+
                 # get the date, format it so it's server ready
                 date_given = dt.strptime(date_given, '%d/%m/%Y')
                 new_sermon = Sermons(title=title_given, \
@@ -75,7 +67,10 @@ def upload_podbean(self, filename, title_given, content_given, date_given, fname
                                      pod_id=pod_id, \
                                      pod_media_url=pod_media_url, \
                                      pod_logo_url=pod_logo_url, \
-                                     tmp_thumbnail = fname_thumb)
+                                     tmp_thumbnail = fname_thumb, \
+                                     sermon_series = ss)
+
+                print(title_given, date_given, filename, pod_id, pod_media_url, pod_logo_url, fname_thumb, ss)
 
                 session.add(new_sermon)
                 try:
@@ -128,6 +123,6 @@ def t_stat(t_id):
         'state': task.state,
         'current': 0,
         'total': 100,
-        'status':task.info['status']
+        'status':str(task.info)
         }
     return fl.jsonify(response)
