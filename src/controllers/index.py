@@ -41,7 +41,6 @@ def show_eps():
 
     return fl.render_template('view_all.html', sermons=sermon_db, eps=all, cols=cols)
 
-
 def load_sermon(id):
     sermon_db = Sermons.query.get(id)
     pod = p.read_sermon(sermon_db.pod_id)['episode']
@@ -57,3 +56,15 @@ def load_sermon(id):
             return fl.render_template('load_sermon.html', sermon=sermon_db, pod=pod, med=med)
         else:
             pass
+        return fl.render_template('search.html')
+
+
+def search():
+    from src.forms.index import Search
+    form = Search()
+    if fl.request.method == 'GET':
+        return fl.render_template("search.html", form=form)
+    else:
+        res = fl.request.form['query']
+        Sermons.query.search(u''+res+'').all()
+        return fl.render_template('search.html', form=form, res=res)

@@ -28,7 +28,7 @@
   function update_prog(status_url, nanobar) {
     $.getJSON(status_url, function(data){
       var bar = nanobar.el[0];
-      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
+      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE' || data['state'] == 'PENDING') {
         done = true;
       }
       nanobar.go(data['current']);

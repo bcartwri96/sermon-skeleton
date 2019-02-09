@@ -9,7 +9,7 @@ from src.models.models import Sermons
 from datetime import datetime as dt
 from src.models.db import session
 from src.scripts.index import get_env_variable
-from src.controllers.tasks import upload_podbean, save_to_disk
+from src.controllers.tasks import upload_podbean
 
 # get conf
 cfg = cp.ConfigParser()

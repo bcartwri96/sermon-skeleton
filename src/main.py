@@ -20,6 +20,7 @@ import src.controllers as cn
 # allow it back in so controllers can use it.
 
 
+# security key
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
@@ -64,10 +65,14 @@ def logout():
     return cn.login.out()
 
 # settings
-
 @app.route("/settings", methods=["GET", "POST"])
 def settings():
     return cn.settings.main()
+
+#searching
+@app.route("/search/", methods=["GET", "POST"])
+def search():
+    return cn.index.search()
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):

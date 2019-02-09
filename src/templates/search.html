@@ -1,0 +1,8 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+<form action="{{ url_for('search') }}" method="POST">
+{{ form.query.label }}{{ form.query }}
+{{ form.sub }}
+</form>
+{{ res }}

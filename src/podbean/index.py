@@ -12,6 +12,7 @@ cfg.read('config.ini') # read it in.
 upload_loc = cfg['MAIN']['PROJ_ROOT']+ \
              cfg['MAIN']['UPLOADS_FOLDER']
 
+
 class Podbean:
     # record information which is useful for any interaction with
     # podbean and then the user can pass it whenever we need it.
@@ -78,7 +79,7 @@ class Podbean:
 
         # upload
         url = "https://api.podbean.com/v1/files/uploadAuthorize"
-        req = r.post(url, params=payload)
+        req = r.get(url, params=payload)
 
         # NOTE HERE: the actual docs say to submit a GET request to upload the
         # sermon (which is obviously strange given it's an upload) and regardless
@@ -88,6 +89,7 @@ class Podbean:
         if req.status_code == 200:
             file_key = resp["file_key"]
             presigned_url = resp["presigned_url"]
+            print(req.text)
             return [presigned_url, file_key]
 
         else:
@@ -96,11 +98,12 @@ class Podbean:
             #TODO: deal with errors gracefully
 
     def upload_resource(self, url, media_key, type):
-        head = {'Content-Type':type}
-        files = {'file': media_key}
+        head = {'Content-Type': str(type)}
+        # files = {'file': open(media_key, 'rb')}
+        files = {'file': str(media_key)}
 
         res = r.put(url, headers=head, files=files)
-
+        print(res.text)
         if res.status_code == 200:
             return True
         else:
@@ -179,3 +182,7 @@ def init(client_id, secret):
         return pod
     else:
         return response.text
+
+# for dev purposes only
+# p = pod.init('b2636afef12301bf4c4e6', 'd7fc99f6aa360b8b0e064')
+# file = "test_2.mp3"

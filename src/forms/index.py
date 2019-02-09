@@ -31,3 +31,7 @@ class Upload(FlaskForm):
 
 class AddSermonSeries(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
+
+class Search(FlaskForm):
+    query = StringField('query', validators=[DataRequired()])
+    sub = SubmitField("Search")

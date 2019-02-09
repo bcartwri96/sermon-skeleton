@@ -19,5 +19,6 @@ django = "*"
 celery = {extras = ["redis"]}
 flask-mail = "*"
 flask-cors = "*"
+sqlalchemy-searchable = "*"
 
 [dev-packages]

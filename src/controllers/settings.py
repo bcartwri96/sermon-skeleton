@@ -18,6 +18,7 @@ def main():
             try:
                 session.add(res)
                 session.commit()
+                session.flush()
                 fl.flash("Success")
             except IOError:
                 fl.flash("Failed to submit to database")
