@@ -1,14 +1,12 @@
 from src.models.db import Base as Base
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm.query import Query
+import sqlalchemy.orm.query as query
 from sqlalchemy_utils.types import TSVectorType
 from sqlalchemy_searchable import SearchQueryMixin
+from flask_sqlalchemy import SQLAlchemy
 
-class BaseQuery():
-    pass
-
-class User(Base):
+class User(Model):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
 
@@ -41,15 +39,12 @@ class User(Base):
         # note this is unicode, because python3 is by default.
         return self.id
 
-class SermonsQuery(Query, SearchQueryMixin):
-    pass
 
-class Sermons(Base):
+class Sermons(Model):
     # NOTE in prod, media_url and pod_id need to be unique. enforcable at db
     __tablename__ = 'sermons'
     __table_args__ = {'extend_existing': True}
 
-    query_class = SermonsQuery
     id = Column(Integer, primary_key=True)
     title = Column(String(250), unique=True)
     description = Column(String(250))
@@ -80,7 +75,7 @@ class Sermons(Base):
         self.sermon_series = sermon_series
         self.sermon_series_id = sermon_series_id
 
-class Sermon_Series(Base):
+class Sermon_Series(Model):
     __tablename__ = 'sermon_series'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))

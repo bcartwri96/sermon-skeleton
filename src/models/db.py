@@ -5,7 +5,6 @@ import src.scripts.index as scripts
 import sqlalchemy as sa
 from sqlalchemy.orm import scoped_session, sessionmaker, configure_mappers
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_searchable import make_searchable
 
 # the values of those depend on your setup
 POSTGRES_URL = scripts.get_env_variable("POSTGRES_URL")
@@ -27,7 +26,6 @@ session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
 Base = declarative_base()
-make_searchable(Base.metadata, options={'regconfig': 'pg_catalog.english'})
 Base.query = session.query_property()
 
 configure_mappers()
