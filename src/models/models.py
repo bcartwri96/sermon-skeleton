@@ -6,7 +6,7 @@ from sqlalchemy_utils.types import TSVectorType
 from sqlalchemy_searchable import SearchQueryMixin
 from flask_sqlalchemy import SQLAlchemy
 
-class User(Model):
+class User(Base):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
 
@@ -40,7 +40,7 @@ class User(Model):
         return self.id
 
 
-class Sermons(Model):
+class Sermons(Base):
     # NOTE in prod, media_url and pod_id need to be unique. enforcable at db
     __tablename__ = 'sermons'
     __table_args__ = {'extend_existing': True}
@@ -56,10 +56,11 @@ class Sermons(Model):
     date_given = Column(Date)
     sermon_series_id = Column(Integer, ForeignKey("sermon_series.id"))
     sermon_series = relationship("Sermon_Series")
+    author_id = Column(Integer, ForeignKey("authors.id"))
+    author = relationship("Authors")
 
     # define what can be searhed full-text
     search_vector = Column(TSVectorType('title', 'description'))
-
 
     def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, \
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
@@ -75,7 +76,18 @@ class Sermons(Model):
         self.sermon_series = sermon_series
         self.sermon_series_id = sermon_series_id
 
-class Sermon_Series(Model):
+class Authors(Base):
+    __tablename__ = 'authors'
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+
+    def __init__(self, id=None, name=None):
+        self.id = id
+        self.name = name
+
+class Sermon_Series(Base):
     __tablename__ = 'sermon_series'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))

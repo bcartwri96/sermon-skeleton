@@ -5,6 +5,7 @@ import configparser as cp
 import os
 from src.models.db import session
 import flask as fl
+import boto3 as aws #the AWS python HTTP wrapper lib
 
 # get conf
 cfg = cp.ConfigParser()
@@ -12,6 +13,32 @@ cfg.read('config.ini') # read it in.
 upload_loc = cfg['MAIN']['PROJ_ROOT']+ \
              cfg['MAIN']['UPLOADS_FOLDER']
 
+
+class AWS:
+    # define the class which contacts and uses AWS to store data, and retreive
+    # resources from
+
+    def __init__(self, bucket):
+        self.bucket = bucket
+        self.connection = None
+        self.client = None
+
+    def init(bucket_name, profile_name):
+
+        # this is going to assume you've already done the config work which
+        # is normal in any AWS operation (say, with AWSCLI)
+
+        aws.setup_default_session(profile_name=profile_name)
+        con = aws.resource('s3')
+        self.connection = con
+        client = aws.client('s3')
+        self.client = client
+
+        return client
+
+
+    def upload_resource(self, resource, type):
+        pass
 
 class Podbean:
     # record information which is useful for any interaction with
@@ -66,7 +93,7 @@ class Podbean:
 
         payload = {}
         payload['access_token'] = self.access_token
-        payload['content_type'] = type #"audio/mpeg"
+        payload['content_type'] = "audio/mpeg"
         payload['filename'] = resource
 
         # get the file
@@ -98,17 +125,18 @@ class Podbean:
             #TODO: deal with errors gracefully
 
     def upload_resource(self, url, media_key, type):
-        head = {'Content-Type': str(type)}
+        head = {'Content-Type': 'audio/mpeg'}
         # files = {'file': open(media_key, 'rb')}
         files = {'file': str(media_key)}
+        with open(media_key, 'rb') as data:
+            res = r.put(url, headers=head, data=data)
+            print(res.text)
 
-        res = r.put(url, headers=head, files=files)
-        print(res.text)
-        if res.status_code == 200:
-            return True
-        else:
-            return False
-
+            if res.status_code == 200:
+                return True
+            else:
+                return False
+        return False
 
     def publish_sermon(self, title, content, media_key, logo_key):
         # this takes the temp file uploaded and binds it with important
@@ -182,7 +210,3 @@ def init(client_id, secret):
         return pod
     else:
         return response.text
-
-# for dev purposes only
-# p = pod.init('b2636afef12301bf4c4e6', 'd7fc99f6aa360b8b0e064')
-# file = "test_2.mp3"

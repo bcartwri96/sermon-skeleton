@@ -14,6 +14,7 @@
         <a class="nav-item nav-link" href="#">Donate</a>
         <a class="nav-item nav-link" href="{{ url_for('view') }}">View All</a>
         <a class="nav-item nav-link" href="{{ url_for('settings') }}">Settings</a>
+        <a class="nav-item nav-link" href="{{ url_for('search') }}">Search</a>
         <!-- <a class="nav-item nav-link disabled" href="#">Disabled</a> -->
       </div>
     </div>
@@ -33,6 +34,7 @@
         <a class="nav-item nav-link active" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
         <a class="nav-item nav-link" href="{{ url_for('upload') }}">Upload</a>
         <a class="nav-item nav-link" href="{{ url_for('settings') }}">Settings</a>
+        <a class="nav-item nav-link" href="{{ url_for('search') }}">Search</a>
         <!-- <a class="nav-item nav-link disabled" href="#">Disabled</a> -->
       </div>
     </div>
@@ -42,3 +44,11 @@
     <a style="margin-left: 10px;" href="{{ url_for('logout') }}"><button class="btn btn-outline-danger" type="button">Logout</button></a>
   </nav>
 {% endif %}
+
+{% with messages = get_flashed_messages() %}
+ {% if messages %}
+    {% for message in messages %}
+       {{ message }}
+    {% endfor %}
+ {% endif %}
+{% endwith %}

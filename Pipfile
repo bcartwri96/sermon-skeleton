@@ -20,5 +20,6 @@ celery = {extras = ["redis"]}
 flask-mail = "*"
 flask-cors = "*"
 sqlalchemy-searchable = "*"
+boto3 = "*"
 
 [dev-packages]

@@ -28,8 +28,6 @@ session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = session.query_property()
 
-configure_mappers()
-
 
 def create_db():
     """Destroys and creates the database and tables"""

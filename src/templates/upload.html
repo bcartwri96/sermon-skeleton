@@ -28,8 +28,9 @@
   function update_prog(status_url, nanobar) {
     $.getJSON(status_url, function(data){
       var bar = nanobar.el[0];
-      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE' || data['state'] == 'PENDING') {
+      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
         done = true;
+        console.log("done true");
       }
       nanobar.go(data['current']);
     } );
@@ -46,6 +47,7 @@
 <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
     {{ form.csrf_token }}
     {{ form.title.label}} {{ form.title }}<br>
+    {{ form.author.label }}{{ form.author }}<br>
     {{ form.thumb.label }} {{ form.thumb }}<br>
     {{ form.date_given.label }} {{ form.date_given }}<br>
     {{ form.sermon.label }} {{ form.sermon }}<br>

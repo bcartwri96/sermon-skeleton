@@ -53,7 +53,8 @@ def load_sermon(id):
 
     if sermon_db != None:
         if fl.request.method == 'GET':
-            return fl.render_template('load_sermon.html', sermon=sermon_db, pod=pod, med=med)
+            return fl.render_template('load_sermon.html', sermon=sermon_db, \
+            pod=pod, med=med)
         else:
             pass
         return fl.render_template('search.html')
@@ -61,10 +62,16 @@ def load_sermon(id):
 
 def search():
     from src.forms.index import Search
+    from src.controllers.search import search_master
     form = Search()
+    cols = int(config['MAIN']['COLUMNS_VIEW_ALL'])
+
     if fl.request.method == 'GET':
-        return fl.render_template("search.html", form=form)
+        return fl.render_template("search.html", form=form, cols=cols)
     else:
         res = fl.request.form['query']
-        Sermons.query.search(u''+res+'').all()
-        return fl.render_template('search.html', form=form, res=res)
+        all = search_master(res, False, True, False, False)
+        if all == []:
+            fl.flash("No results found")
+
+        return fl.render_template('search.html', form=form, res=all, cols=cols)

@@ -57,19 +57,23 @@ def upload_podbean(self, filename, title_given, content_given, date_given, fname
                 # write this to the database
 
                 # get the object for the sermon series
-                ss = Sermon_Series.query.get(ss)
+                ss = Sermon_Series.query.get(int(ss))
 
+                # ensure that the title is unique
+                unique = Sermons.query.filter(Sermons.title == title_given).all()
                 # get the date, format it so it's server ready
                 date_given = dt.strptime(date_given, '%d/%m/%Y')
-                new_sermon = Sermons(title=title_given, \
-                                     date_given=date_given, \
-                                     tmp_media=filename, \
-                                     pod_id=pod_id, \
-                                     pod_media_url=pod_media_url, \
-                                     pod_logo_url=pod_logo_url, \
-                                     tmp_thumbnail = fname_thumb, \
-                                     sermon_series = ss)
-
+                if len(unique) == 0:
+                    new_sermon = Sermons(title=title_given, \
+                                         date_given=date_given, \
+                                         tmp_media=filename, \
+                                         pod_id=pod_id, \
+                                         pod_media_url=pod_media_url, \
+                                         pod_logo_url=pod_logo_url, \
+                                         tmp_thumbnail = fname_thumb, \
+                                         sermon_series = ss)
+                else:
+                    self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Filename not unique'})
                 print(title_given, date_given, filename, pod_id, pod_media_url, pod_logo_url, fname_thumb, ss)
 
                 session.add(new_sermon)

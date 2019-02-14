@@ -21,6 +21,18 @@ def up():
     form = Upload()
     if fl.request.method == 'POST':
         if form.validate_on_submit():
+            title_given = fl.request.form['title']
+            date_given = fl.request.form['date_given']
+            ss = fl.request.form['sermon_series']
+            description = fl.request.form['description']
+
+
+            # check that filename is not taken, otherwise continue.
+            q = Sermons.query.filter(Sermons.title == title_given).all()
+            if len(q) > 0:
+                fl.flash("Title already taken")
+                return fl.render_template('upload.html', form=form)
+
             # upload media to server
             f = fl.request.files['thumb']
             filename = secure_filename(f.filename)
@@ -33,17 +45,11 @@ def up():
 
             # upload to server first
             f = fl.request.files['sermon']
-            title_given = fl.request.form['title']
-            date_given = fl.request.form['date_given']
             filename = secure_filename(f.filename)
             fname_media = os.path.join(upload_loc, filename)
             # todo: ensure this gracefully fails!
             f.save(fname_media)
             # save_to_disk.delay(filename, fname_media)
-
-            # get the sermon series
-            ss = fl.request.form['sermon_series']
-            description = fl.request.form['description']
 
             upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
             # init the workers which upload the content to drive and

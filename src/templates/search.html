@@ -1,8 +1,52 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
-<form action="{{ url_for('search') }}" method="POST">
-{{ form.query.label }}{{ form.query }}
-{{ form.sub }}
-</form>
-{{ res }}
+<!-- break up the page into search filter and search results -->
+<div class="container-fluid">
+  <div class="row" style="margin-top:40px">
+    <div class="col-lg-5">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-10" id="filter-side">
+        <form class="form-group" action="{{ url_for('search') }}" method="POST">
+          <div class="table-responsive-sm" cellspacing=0 cellpadding=0>
+            <table>
+              <tr>
+                <td>{{ form.query.label }}</td>
+                <td>{{ form.query(class_="form-control") }}</td>
+              </tr>
+              <tr>
+                <td>{{ form.author.label }}</td>
+                <td>{{ form.author(class_="form-control") }}</td>
+              </tr>
+
+              <td>{{ form.sub(class_="btn btn-primary") }}</td>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-lg-7">
+      <h4 class="display-4">Results</h4>
+      <div class="container">
+        {% for col in res | slice(cols) %}
+        <div class="row">
+          {% for result in col %}
+          <div class="col-sm">
+            <a href="{{ url_for('sermon', id=result.id) }}">
+            <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ result.pod_logo_url }}" width="150">
+            <h6 class="display-6">{{ result.title }}</h6>
+            <ul>{{ result.description }}</ul></a>
+            <p class="lead" style="font-size:14px">{{ result.date_given }}</p>
+            <p class="lead" style="font-size:14px">{{ result.sermon_series.name }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% include "footer.html" %}

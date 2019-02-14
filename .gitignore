@@ -1,4 +1,6 @@
 dev.sh
+test.mp3
+uploads/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
