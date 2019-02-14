@@ -14,21 +14,22 @@ upload_loc = cfg['MAIN']['PROJ_ROOT']+ \
              cfg['MAIN']['UPLOADS_FOLDER']
 
 
-class AWS:
+class Aws:
     # define the class which contacts and uses AWS to store data, and retreive
     # resources from
 
-    def __init__(self, bucket):
-        self.bucket = bucket
+    def __init__(self, bucket_name, profile_name):
+        self.bucket_name = bucket_name
+        self.profile_name = profile_name
         self.connection = None
         self.client = None
 
-    def init(bucket_name, profile_name):
+    def init(self):
 
         # this is going to assume you've already done the config work which
         # is normal in any AWS operation (say, with AWSCLI)
 
-        aws.setup_default_session(profile_name=profile_name)
+        aws.setup_default_session(profile_name=self.profile_name)
         con = aws.resource('s3')
         self.connection = con
         client = aws.client('s3')
@@ -36,9 +37,20 @@ class AWS:
 
         return client
 
-
     def upload_resource(self, resource, type):
-        pass
+        try:
+            data = open(resource, 'rb')
+        except IOError:
+            print("Resource doesn't exist")
+            return False
+
+        new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=data.name, \
+        Body=data)
+        if not new_obj:
+            print("Resource failed to upload")
+            return False
+        else:
+            return True
 
 class Podbean:
     # record information which is useful for any interaction with
