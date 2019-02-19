@@ -1,5 +1,5 @@
 from src.celery import cel
-from src.models.models import Sermons, Sermon_Series, Authors
+from src.models.models import Sermons, Sermon_Series, Authors, Books_Bible
 from src.models.db import session
 from src.scripts.index import get_env_variable
 import configparser as cp
@@ -18,7 +18,7 @@ def add_task(x, y):
     print("dome some sleeping")
 
 @cel.task(bind=True)
-def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id):
+def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible):
     # init aws platform
     import src.controllers.aws.index as aws
 
@@ -53,8 +53,11 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
         # get the object for the sermon series
         ss = Sermon_Series.query.get(int(ss))
 
-        #egt the object for the author
+        #get the object for the author
         author = Authors.query.get(int(author))
+
+        # get the object for the bible book
+        book_bible = Books_Bible.query.get(book_bible)
 
         # ensure that the title is unique
         unique = Sermons.query.filter(Sermons.title == title_given).all()
@@ -69,7 +72,8 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
                                  tmp_thumbnail = fname_thumb, \
                                  sermon_series = ss, \
                                  aws_key_media = res, \
-                                 aws_key_thumb = res_thumb)
+                                 aws_key_thumb = res_thumb, \
+                                 book_bible = book_bible)
 
             session.add(new_sermon)
             try:

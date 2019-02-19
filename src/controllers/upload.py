@@ -22,11 +22,13 @@ def up():
     form = Upload()
     if fl.request.method == 'POST':
         if form.validate_on_submit():
+
             title_given = fl.request.form['title']
             date_given = fl.request.form['date_given']
             ss = fl.request.form['sermon_series']
             description = fl.request.form['description']
             author = fl.request.form['author']
+            book_bible = fl.request.form['book_bible']
 
             # check that filename is not taken, otherwise continue.
             q = Sermons.query.filter(Sermons.title == title_given).all()
@@ -51,8 +53,8 @@ def up():
             # todo: ensure this gracefully fails!
             f.save(fname_media)
             # save_to_disk.delay(filename, fname_media)
-            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, author, date_given, fname_thumb, ss, current_user.id])
-            print(fname_media, title_given, description, date_given, fname_thumb, ss)
+            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, author, date_given, fname_thumb, ss, current_user.id, book_bible])
+
             # upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
             # init the workers which upload the content to drive and
             # podcast distro
@@ -63,6 +65,4 @@ def up():
             fl.flash(str(form.errors))
             return fl.render_template('upload.html', form=form)
     else:
-
-
         return fl.render_template('upload.html', form=form, task_id=0)

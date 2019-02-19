@@ -60,6 +60,8 @@ class Sermons(Base):
     sermon_series = relationship("Sermon_Series")
     author_id = Column(Integer, ForeignKey("authors.id"))
     author = relationship("Authors")
+    book_bible_id = Column(Integer, ForeignKey("books_bible.id"))
+    book_bible = relationship("Books_Bible")
     views = Column(Integer, default=0)
 
     # define what can be searhed full-text
@@ -69,7 +71,7 @@ class Sermons(Base):
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
     sermon_series=None, sermon_series_id=None, description=None, \
     aws_key_media=None, aws_key_thumb=None, author=None, author_id=None, \
-    views=None):
+    views=None, book_bible=None, book_bible_id=None):
         self.title = title
         self.description = description
         self.author = author
@@ -84,6 +86,8 @@ class Sermons(Base):
         self.sermon_series_id = sermon_series_id
         self.aws_key_media = aws_key_media
         self.aws_key_thumb = aws_key_thumb
+        self.book_bible = book_bible
+        self.book_bible_id = book_bible_id
         self.views = views
 
 class Authors(Base):
@@ -105,3 +109,18 @@ class Sermon_Series(Base):
     def __init__(self, id=None, name=None):
         self.id = id
         self.name = name
+
+class Books_Bible(Base):
+    __tablename__ = 'books_bible'
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(30))
+    nickname = Column(String(30))
+    volume = Column(String(2))
+
+    def __init__(self, id=None, name=None, nickname=None, volume=None):
+        self.id = id
+        self.name = name
+        self.nickname = nickname
+        self.volume = volume

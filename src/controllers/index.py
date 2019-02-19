@@ -98,7 +98,7 @@ def find_unique_id(u_id):
     while not found:
         max_int = int(sys.maxsize)
         id = str(u_id) + "/" + str(random.randint(0, max_int-1))
-
+        
         if len(Sermons.query.filter(or_(Sermons.aws_key_media == id, Sermons.aws_key_thumb == id)).all()) == 0:
             return id
 

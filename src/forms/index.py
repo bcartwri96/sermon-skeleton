@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, ValidationError
 from datetime import date
-from src.models.models import Sermon_Series, Authors
+from src.models.models import Sermon_Series, Authors, Books_Bible
 
 def content_len_check(form, field):
     try:
@@ -44,6 +44,8 @@ class Upload(FlaskForm):
         FileAllowed(['jpg', 'png'], 'Only image uploading is permitted.')])
     sermon = FileField('sermon', validators=[
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
+    book_bible = SelectField('book_bible', coerce=int, \
+    choices=[(bb.id, bb.nickname) for bb in Books_Bible.query.all()])
 
 class Settings(FlaskForm):
     add_ss_name = StringField('add_ss_name')

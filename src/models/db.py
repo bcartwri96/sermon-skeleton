@@ -53,6 +53,7 @@ def reset_db():
 def create_tables():
     """Works the models into the db in using the ORM"""
     print('Creating tables.')
+    import csv
     # import the models used to describe the tables we're creating (using the
     # ORM). Link: http://flask-sqlalchemy.pocoo.org/2.3/models/
     import src.models.models as m
@@ -62,4 +63,17 @@ def create_tables():
     # let's add the admin user
     u = m.User(name="Admin", email="admin", pw="1234")
     session.add(u)
+
+    # let's add all the books of the bible
+    # thanks to jpoehls @ gh.com/jpoehls/bible-metadata for the bible_meta file!
+    r = 0
+    with open('bible_meta.csv', newline='') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if r>0:
+                b = m.Books_Bible(name=row[1], nickname=row[2], volume=row[4])
+                session.add(b)
+            else:
+                r += 1 # first line contains junk
+
     session.commit()
