@@ -1,11 +1,12 @@
 from src.celery import cel
-from src.models.models import Sermons, Sermon_Series
+from src.models.models import Sermons, Sermon_Series, Authors
 from src.models.db import session
 from src.scripts.index import get_env_variable
 import configparser as cp
 import flask as fl
 from datetime import datetime as dt
 import time
+from src.controllers.index import find_unique_id
 
 @cel.task
 def add_task(x, y):
@@ -17,7 +18,7 @@ def add_task(x, y):
     print("dome some sleeping")
 
 @cel.task(bind=True)
-def upload_aws(self, filename, title_given, content_given, date_given, fname_thumb, ss):
+def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id):
     # init aws platform
     import src.controllers.aws.index as aws
 
@@ -36,9 +37,11 @@ def upload_aws(self, filename, title_given, content_given, date_given, fname_thu
     # simpler process for this side of things... just upload directly to the
     # server.
     self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
-    res = a.upload_resource(filename, 'audio/mpeg')
+    id = find_unique_id(u_id)
+    res = a.upload_resource(filename, 'audio/mpeg', id)
     self.update_state(state='PROGRESS', meta={'current':70, 'total':100, 'status':'Authorising upload of image'})
-    res_thumb = a.upload_resource(fname_thumb, 'image/png')
+    id = find_unique_id(u_id)
+    res_thumb = a.upload_resource(fname_thumb, 'image/png', id)
     import time
     time.sleep(2)
     if res_thumb != False and res != False:
@@ -50,13 +53,18 @@ def upload_aws(self, filename, title_given, content_given, date_given, fname_thu
         # get the object for the sermon series
         ss = Sermon_Series.query.get(int(ss))
 
+        #egt the object for the author
+        author = Authors.query.get(int(author))
+
         # ensure that the title is unique
         unique = Sermons.query.filter(Sermons.title == title_given).all()
         print(res)
         print(res_thumb)
         if len(unique) == 0:
-            new_sermon = Sermons(title=title_given, \
-                                 date_given=date_given, \
+            new_sermon = Sermons(title = title_given, \
+                                 date_given = date_given, \
+                                 description = description, \
+                                 author = author, \
                                  tmp_media=filename, \
                                  tmp_thumbnail = fname_thumb, \
                                  sermon_series = ss, \

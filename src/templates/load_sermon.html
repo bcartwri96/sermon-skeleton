@@ -23,7 +23,7 @@
       <div class="grid-x grid-padding-x">
         <div class="large-12 medium-12 small-12 cell">
           <div id="single-song-player">
-            <img data-amplitude-song-info="cover_art_url"/>
+            <center><img data-amplitude-song-info="cover_art_url"/></center>
             <div class="bottom-container">
               <progress class="amplitude-song-played-progress" id="song-played-progress"></progress>
 
@@ -39,7 +39,7 @@
               <div class="control-container">
                 <div class="amplitude-play-pause" id="play-pause"></div>
                 <div class="meta-container">
-                  <span data-amplitude-song-info="name" class="song-name"></span>
+                  <span data-amplitude-song-info="name" class="song-name"></span><br>
                   <span data-amplitude-song-info="artist"></span>
                 </div>
               </div>
@@ -69,9 +69,8 @@
   Amplitude.init({
     "songs": [
       {
-        "name": "Risin' High (feat Raashan Ahmad)",
-        "artist": "Ancient Astronauts",
-        "album": "We Are to Answer",
+        "name": "{{ sermon.title }}",
+        "artist": "{{ sermon.author.name }}",
         "url": "{{ media_url }}",
         "cover_art_url": "{{ thumb_url }}"
       }

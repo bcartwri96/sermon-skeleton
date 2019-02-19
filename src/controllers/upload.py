@@ -10,6 +10,7 @@ from datetime import datetime as dt
 from src.models.db import session
 from src.scripts.index import get_env_variable
 from src.controllers.tasks import upload_podbean, upload_aws
+from flask_login import current_user
 
 # get conf
 cfg = cp.ConfigParser()
@@ -25,7 +26,7 @@ def up():
             date_given = fl.request.form['date_given']
             ss = fl.request.form['sermon_series']
             description = fl.request.form['description']
-
+            author = fl.request.form['author']
 
             # check that filename is not taken, otherwise continue.
             q = Sermons.query.filter(Sermons.title == title_given).all()
@@ -50,7 +51,7 @@ def up():
             # todo: ensure this gracefully fails!
             f.save(fname_media)
             # save_to_disk.delay(filename, fname_media)
-            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
+            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, author, date_given, fname_thumb, ss, current_user.id])
             print(fname_media, title_given, description, date_given, fname_thumb, ss)
             # upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
             # init the workers which upload the content to drive and

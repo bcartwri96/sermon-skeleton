@@ -5,12 +5,12 @@
 <h3 class="display-3">View All Episodes</h3>
 
 <div class="container">
-  {% for col in sermons | slice(cols) %}
+  {% for col in sermons | batch(cols+1) %}
   <div class="row">
     {% for sermon in col %}
-    <div class="col-sm">
+    <div class="col-sm-{{ (12/cols) | int }}">
       <a href="{{ url_for('sermon', id=sermon.id) }}">
-      <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ sermon.pod_logo_url }}" width="500">
+      <center><img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ eps[sermon.id][1] }}" width="300"></center>
       <ul>{{ sermon.title }}</ul></a>
     </div>
     {% endfor %}

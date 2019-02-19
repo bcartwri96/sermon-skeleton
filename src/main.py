@@ -31,9 +31,6 @@ lm.init_app(app)
 @app.route("/")
 # @login.login_required
 def index():
-    print("Working...")
-    # add_task.delay(1,1)
-    print("Done?")
     return cn.index.main()
 
 @app.route("/view")
@@ -41,7 +38,7 @@ def view():
     return cn.index.show_eps()
 
 @app.route("/upload", methods=['GET', 'POST'])
-# @login.login_required
+@login.login_required
 def upload():
     return cn.upload.up()
 

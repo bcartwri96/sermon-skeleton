@@ -34,7 +34,7 @@
           {% for result in col %}
           <div class="col-sm">
             <a href="{{ url_for('sermon', id=result.id) }}">
-            <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ result.pod_logo_url }}" width="150">
+            <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ media[result.id][1] }}" width="150">
             <h6 class="display-6">{{ result.title }}</h6>
             <ul>{{ result.description }}</ul></a>
             <p class="lead" style="font-size:14px">{{ result.date_given }}</p>

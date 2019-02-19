@@ -23,7 +23,7 @@ def search_master(query, author, title, book_bible, series):
             return []
 
     elif title and author:
-        res = ml.Sermons.query.filter(_or(ml.Sermons.title.like("%"+query+"%"), \
-        ml.Sermons.author.like("%"+query+"%"))).all()
+        res = ml.Sermons.query.filter(_or(ml.Sermons.title.ilike("%"+query+"%"), \
+        ml.Sermons.author.ilike("%"+query+"%"))).all()
     else:
         return []

@@ -60,6 +60,7 @@ class Sermons(Base):
     sermon_series = relationship("Sermon_Series")
     author_id = Column(Integer, ForeignKey("authors.id"))
     author = relationship("Authors")
+    views = Column(Integer, default=0)
 
     # define what can be searhed full-text
     search_vector = Column(TSVectorType('title', 'description'))
@@ -67,9 +68,12 @@ class Sermons(Base):
     def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, \
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
     sermon_series=None, sermon_series_id=None, description=None, \
-    aws_key_media=None, aws_key_thumb=None):
+    aws_key_media=None, aws_key_thumb=None, author=None, author_id=None, \
+    views=None):
         self.title = title
         self.description = description
+        self.author = author
+        self.author_id = author_id
         self.tmp_thumbnail = tmp_thumbnail
         self.tmp_media = tmp_media
         self.pod_id = pod_id
@@ -80,6 +84,7 @@ class Sermons(Base):
         self.sermon_series_id = sermon_series_id
         self.aws_key_media = aws_key_media
         self.aws_key_thumb = aws_key_thumb
+        self.views = views
 
 class Authors(Base):
     __tablename__ = 'authors'

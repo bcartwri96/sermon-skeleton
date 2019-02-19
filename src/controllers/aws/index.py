@@ -39,7 +39,7 @@ class Aws:
         return self.client.generate_presigned_url('get_object', \
         Params={'Bucket': self.bucket_name, 'Key': key})
 
-    def upload_resource(self, resource, type):
+    def upload_resource(self, resource, type, id):
         try:
             data = open(resource, 'rb')
         except IOError:
@@ -47,17 +47,17 @@ class Aws:
             return False
 
         # we need to generate a random sequence for the key of the resource
-        # TODO
+        # fetch the current max
 
-        obj = self.get_obj(data.name)
+        obj = self.get_obj(id)
         if not obj:
-            new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=data.name, \
+            new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=id, \
             Body=data)
             if not new_obj:
                 print("Resource failed to upload")
                 return False
             else:
-                return data.name
+                return id
         else:
             print("Resource found on system already with this ID.")
             return False

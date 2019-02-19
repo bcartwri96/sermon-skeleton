@@ -6,6 +6,8 @@ from src.conf import config
 import requests as r
 import src.conf as conf
 from src.controllers.aws import index as aws_lib
+import random
+from src.models.db import session
 
 # get the aws details
 
@@ -47,6 +49,10 @@ def load_sermon(id):
     media_url = aws.get_obj_url(sermon_db.aws_key_media)
     thumb_url = aws.get_obj_url(sermon_db.aws_key_thumb)
 
+    # increment the sermon view count
+    sermon_db.views = sermon_db.views+1
+    session.add(sermon_db)
+    session.commit()
 
     if sermon_db != None:
         if fl.request.method == 'GET':
@@ -71,4 +77,29 @@ def search():
         if all == []:
             fl.flash("No results found")
 
-        return fl.render_template('search.html', form=form, res=all, cols=cols)
+        data = {}
+        for sermon in all:
+            # dict the sermon id with the urls required so we can
+            # fetch client side
+            data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
+            aws.get_obj_url(sermon.aws_key_thumb)]
+
+
+        return fl.render_template('search.html', form=form, res=all, media=data, cols=cols)
+
+
+def find_unique_id(u_id):
+    # get a unique ID for upload to S3
+    from sqlalchemy import or_
+    # necessary because _or is not passed from Sermons alone.
+    import sys
+
+    found = False
+    while not found:
+        max_int = int(sys.maxsize)
+        id = str(u_id) + "/" + str(random.randint(0, max_int-1))
+
+        if len(Sermons.query.filter(or_(Sermons.aws_key_media == id, Sermons.aws_key_thumb == id)).all()) == 0:
+            return id
+
+    return False
