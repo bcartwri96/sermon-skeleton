@@ -1,15 +1,19 @@
 from flask_login import current_user
 import flask as fl
-import src.podbean.index as podbean
 import src.scripts.index as scripts
 from src.models.models import Sermons
 from src.conf import config
 import requests as r
+import src.conf as conf
+from src.controllers.aws import index as aws_lib
 
-cl_id = scripts.get_env_variable('CLIENT_ID')
-cl_sc = scripts.get_env_variable('CLIENT_SEC')
+# get the aws details
 
-p = podbean.init(cl_id, cl_sc)
+aws_bucket_name = conf.read_config("MAIN", "aws_bucket_name")
+aws_profile_name = conf.read_config("MAIN", 'aws_profile_name')
+
+aws = aws_lib.Aws(aws_bucket_name, aws_profile_name)
+client = aws.init_client()
 
 def main():
     try:
@@ -20,41 +24,34 @@ def main():
 
 
 def show_eps():
-    cl_id = scripts.get_env_variable('CLIENT_ID')
-    cl_sc = scripts.get_env_variable('CLIENT_SEC')
-
-    p = podbean.init(cl_id, cl_sc)
+    # show all the episodes (seen in the view_all page.)
+    data = {}
     sermon_db = Sermons.query.all()
-    all = p.get_sermons(100)['episodes']
 
-    # get the image link too
-    podcast = p.get_podcasts()
-    def_img = podcast['podcasts'][0]['logo']
-
-    # replace with the def_img if there isn't an uploaded image
-    for i in range(0, len(all), 1):
-        if all[i]['logo'] == None:
-            all[i]['logo'] = def_img
+    for sermon in sermon_db:
+        # dict the sermon id with the urls required so we can
+        # fetch client side
+        data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
+        aws.get_obj_url(sermon.aws_key_thumb)]
 
     # retrieve the number of rows and columns for client side
-    cols = int(config['MAIN']['COLUMNS_VIEW_ALL'])
+    cols = conf.read_config("MAIN", "columns_view_all")
+    if cols != False:
+        cols = int(cols)
 
-    return fl.render_template('view_all.html', sermons=sermon_db, eps=all, cols=cols)
+    return fl.render_template('view_all.html', sermons=sermon_db, eps=data, cols=cols)
 
 def load_sermon(id):
     sermon_db = Sermons.query.get(id)
-    pod = p.read_sermon(sermon_db.pod_id)['episode']
 
-    if sermon_db.pod_logo_url == None:
-        podcast = p.get_podcasts()
-        sermon_db.pod_logo_url = podcast['podcasts'][0]['logo']
+    media_url = aws.get_obj_url(sermon_db.aws_key_media)
+    thumb_url = aws.get_obj_url(sermon_db.aws_key_thumb)
 
-    med = r.get(sermon_db.pod_media_url)
 
     if sermon_db != None:
         if fl.request.method == 'GET':
             return fl.render_template('load_sermon.html', sermon=sermon_db, \
-            pod=pod, med=med)
+            media_url=media_url, thumb_url=thumb_url)
         else:
             pass
         return fl.render_template('search.html')

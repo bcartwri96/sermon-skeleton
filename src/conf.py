@@ -7,7 +7,9 @@ config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
                   'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
                   'CELERY_BROKER_URL': 'redis://localhost:6379/0',
                   'CELERY_RESULT_BACKEND': 'redis://localhost:6379/0',
-                  'COLUMNS_VIEW_ALL':'3'}
+                  'COLUMNS_VIEW_ALL':'3',
+                  'AWS_BUCKET_NAME': 'sermon-skeleton',
+                  'AWS_PROFILE_NAME': 'sermon-skeleton'}
 
 
 def write_config():
@@ -17,3 +19,17 @@ def write_config():
         return True
     except IOError:
         return False
+
+
+def read_config(section, option):
+    # get the aws details
+    config = cfg.ConfigParser()
+    config.read('config.ini')
+
+    try:
+        return config.get(section, option)
+    except cfg.NoOptionError as error:
+        print("Failed to get option "+option)
+    except cfg.NoSectionError as error:
+        print("Failed to get section "+section)
+    return False

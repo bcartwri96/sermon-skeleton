@@ -54,6 +54,8 @@ class Sermons(Base):
     pod_media_url = Column(String(100))
     pod_logo_url = Column(String(100))
     date_given = Column(Date)
+    aws_key_media = Column(String(100))
+    aws_key_thumb = Column(String(100))
     sermon_series_id = Column(Integer, ForeignKey("sermon_series.id"))
     sermon_series = relationship("Sermon_Series")
     author_id = Column(Integer, ForeignKey("authors.id"))
@@ -64,7 +66,8 @@ class Sermons(Base):
 
     def __init__(self, title=None, tmp_thumbnail=None, tmp_media=None, \
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
-    sermon_series=None, sermon_series_id=None, description=None):
+    sermon_series=None, sermon_series_id=None, description=None, \
+    aws_key_media=None, aws_key_thumb=None):
         self.title = title
         self.description = description
         self.tmp_thumbnail = tmp_thumbnail
@@ -75,6 +78,8 @@ class Sermons(Base):
         self.date_given = date_given
         self.sermon_series = sermon_series
         self.sermon_series_id = sermon_series_id
+        self.aws_key_media = aws_key_media
+        self.aws_key_thumb = aws_key_thumb
 
 class Authors(Base):
     __tablename__ = 'authors'

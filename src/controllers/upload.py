@@ -4,12 +4,12 @@ from werkzeug.utils import secure_filename
 from src.forms.index import Upload
 import os
 import configparser as cp
-import src.podbean.index as pod
+from src.controllers.podbean import index as pod
 from src.models.models import Sermons
 from datetime import datetime as dt
 from src.models.db import session
 from src.scripts.index import get_env_variable
-from src.controllers.tasks import upload_podbean
+from src.controllers.tasks import upload_podbean, upload_aws
 
 # get conf
 cfg = cp.ConfigParser()
@@ -50,12 +50,13 @@ def up():
             # todo: ensure this gracefully fails!
             f.save(fname_media)
             # save_to_disk.delay(filename, fname_media)
-
-            upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
+            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
+            print(fname_media, title_given, description, date_given, fname_thumb, ss)
+            # upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
             # init the workers which upload the content to drive and
             # podcast distro
 
-            return fl.render_template('upload.html', form=form, loc=fname_media, task_id=upload.id)
+            return fl.render_template('upload.html', form=form, loc=fname_media, task_id=upload_a.id)
         else:
             fl.flash("Unsuccessful validation")
             fl.flash(str(form.errors))

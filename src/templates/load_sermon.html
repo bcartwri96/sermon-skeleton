@@ -59,11 +59,11 @@
 <script type="text/javascript">
   <!-- access control means we need to fetch the url from here -->
 
-  init_media = $.get("{{ sermon.pod_media_url }}");
-  resp_media_url = init_media.getResponseHeader('Location');
-  if (resp_media_url != null) {
-    console.log(resp_media_url);
-  }
+  // init_media = $.get("{{ media_url }}");
+  // resp_media_url = init_media.getResponseHeader('Location');
+  // if (resp_media_url != null) {
+  //   console.log(resp_media_url);
+  // }
 
 
   Amplitude.init({
@@ -72,8 +72,8 @@
         "name": "Risin' High (feat Raashan Ahmad)",
         "artist": "Ancient Astronauts",
         "album": "We Are to Answer",
-        "url": "{{ sermon.tmp_media }}",
-        "cover_art_url": "{{ sermon.pod_logo_url }}"
+        "url": "{{ media_url }}",
+        "cover_art_url": "{{ thumb_url }}"
       }
     ]
   });
