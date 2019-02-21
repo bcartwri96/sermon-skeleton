@@ -48,7 +48,7 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
         # we've uploaded successfully
         self.update_state(state='PROGRESS', meta={'current':90, 'total':100, 'status':'Uploaded. Publishing'})
 
-        date_given = dt.strptime(date_given, '%d/%m/%Y')
+        date_given = dt.strptime(date_given, '%d-%m-%Y')
 
         # get the object for the sermon series
         ss = Sermon_Series.query.get(int(ss))

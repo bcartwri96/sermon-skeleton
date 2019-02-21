@@ -13,6 +13,7 @@ def main():
         if fm.validate_on_submit():
             ss_name = fl.request.form['add_ss_name']
             auth_name = fl.request.form['add_author_name']
+            organisation_name = fl.request.form['org_name']
 
             # any with same name?
             if ss_name != None:

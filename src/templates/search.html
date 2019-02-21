@@ -18,6 +18,14 @@
                 <td>{{ form.author.label }}</td>
                 <td>{{ form.author(class_="form-control") }}</td>
               </tr>
+              <tr>
+                <td>{{ form.books_bible.label }}</td>
+                <td>{{ form.books_bible(class_="form-control") }}</td>
+              </tr>
+              <tr>
+                <td>{{ form.sermon_series.label }}</td>
+                <td>{{ form.sermon_series(class_="form-control") }}</td>
+              </tr>
 
               <td>{{ form.sub(class_="btn btn-primary") }}</td>
             </table>
@@ -29,20 +37,22 @@
     <div class="col-lg-7">
       <h4 class="display-4">Results</h4>
       <div class="container">
-        {% for col in res | slice(cols) %}
-        <div class="row">
-          {% for result in col %}
-          <div class="col-sm">
-            <a href="{{ url_for('sermon', id=result.id) }}">
-            <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ media[result.id][1] }}" width="150">
-            <h6 class="display-6">{{ result.title }}</h6>
-            <ul>{{ result.description }}</ul></a>
-            <p class="lead" style="font-size:14px">{{ result.date_given }}</p>
-            <p class="lead" style="font-size:14px">{{ result.sermon_series.name }}</p>
+        {% if res|length > 0 %}
+          {% for col in res | slice(cols) %}
+          <div class="row">
+            {% for result in col %}
+            <div class="col-sm">
+              <a href="{{ url_for('sermon', id=result.id) }}">
+              <img class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src="{{ media[result.id][1] }}" width="150">
+              <h6 class="display-6">{{ result.title }}</h6>
+              <ul>{{ result.description }}</ul></a>
+              <p class="lead" style="font-size:14px">{{ result.date_given }}</p>
+              <p class="lead" style="font-size:14px">{{ result.sermon_series.name }}</p>
+            </div>
+            {% endfor %}
           </div>
           {% endfor %}
-        </div>
-        {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>

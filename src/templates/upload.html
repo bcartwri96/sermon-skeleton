@@ -1,9 +1,21 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
+<script src="{{ url_for('static', filename='js/dropzone.js') }}"></script>
+<link rel="stylesheet" type="text/css"
+href="{{ url_for('static', filename='css/dropzone-css/dropzone.min.css') }}" />
+<link rel="stylesheet" type="text/css"
+href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
-<div class="progress" id="progress"></div>
+<div id="progress"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <style>
+  #dz {
+    border-style: dashed;
+    border-color: rgb(0, 123, 255);
+  }
   .green {
     color: green;
   }
@@ -16,7 +28,6 @@
 <script>
   // create a progress bar
   var options = {
-    classname: 'progress',
     id: 'progress',
     target: document.getElementById('#progress')
   };
@@ -24,6 +35,8 @@
   var nanobar = new Nanobar( options );
   var status_url = "{{ url_for('task_status', t_id=task_id) }}";
   var done = false;
+  var complete = document.getElementById("complete");
+
 
   function update_prog(status_url, nanobar) {
     $.getJSON(status_url, function(data){
@@ -31,6 +44,7 @@
       if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
         done = true;
         console.log("done true");
+        complete.style.display = "block";
       }
       nanobar.go(data['current']);
     } );
@@ -42,20 +56,26 @@
       update_prog(status_url, nanobar);
     }
   }, 500);
+
 </script>
 
-<form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{ form.title.label}} {{ form.title }}<br>
-    {{ form.author.label }}{{ form.author }}<br>
-    {{ form.thumb.label }} {{ form.thumb }}<br>
-    {{ form.date_given.label }} {{ form.date_given }}<br>
-    {{ form.sermon.label }} {{ form.sermon }}<br>
-    {{ form.book_bible.label }}{{ form.book_bible }}<br>
-    {{ form.sermon_series.label }} {{ form.sermon_series }}<br>
-    {{ form.description.label }} {{ form.description }}<br>
-    <input type="submit" value="Upload">
-</form>
+<div class="container">
+  <h4 class="display-4">Upload a Sermon</h4>
+  <div id="complete" style="display:none;"><div class="alert alert-success">Upload complete!</div></div>
+  <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      {{ form.title.label}} {{ form.title(class_="form-control") }}<br>
+      {{ form.author.label }}{{ form.author(class_="form-control") }}<br>
+      {{ form.thumb.label }} {{ form.thumb(class_="form-control", style="border:none;") }}<br>
+      {{ form.date_given.label }} {{ form.date_given(class_="form-control", id="date_given", readonly="false") }}<br>
+      {{ form.sermon.label }} {{ form.sermon(class_="form-control", style="border:none;") }}<br>
+      {{ form.book_bible.label }}{{ form.book_bible(class_="form-control") }}<br>
+      {{ form.sermon_series.label }} {{ form.sermon_series(class_="form-control") }}<br>
+      {{ form.description.label }} {{ form.description(class_="form-control") }}<br>
+      <input type="submit" value="Upload" class="btn btn-primary">
+  </form>
+</div>
 
-
-saved to: {{ loc }}
+<script type="text/javascript">
+  $("#date_given").flatpickr();
+</script>

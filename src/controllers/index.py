@@ -72,17 +72,36 @@ def search():
     if fl.request.method == 'GET':
         return fl.render_template("search.html", form=form, cols=cols)
     else:
-        res = fl.request.form['query']
-        all = search_master(res, False, True, False, False)
-        if all == []:
-            fl.flash("No results found")
+        query = fl.request.form['query']
+
+        # if they actually aren't empty, then we want to pass on the info
+        # to be used to adjust the results
+        if not (fl.request.form['author'] == "0"):
+            author_filtered = fl.request.form['author']
+        else:
+            author_filtered = False
+        if not (fl.request.form['books_bible'] == "0"):
+            book_bible_filtered = fl.request.form['books_bible']
+        else:
+            book_bible_filtered = False
+        if not (fl.request.form['sermon_series'] == "0"):
+            sermon_series_filtered = fl.request.form['sermon_series']
+        else:
+            sermon_series_filtered = False
+
+        print(author_filtered, book_bible_filtered, sermon_series_filtered)
+        all = search_master(query, author_filtered, book_bible_filtered, \
+        sermon_series_filtered)
 
         data = {}
-        for sermon in all:
-            # dict the sermon id with the urls required so we can
-            # fetch client side
-            data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
-            aws.get_obj_url(sermon.aws_key_thumb)]
+        if all == [] or all == None:
+            fl.flash("No results found")
+        else:
+            for sermon in all:
+                # dict the sermon id with the urls required so we can
+                # fetch client side
+                data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
+                aws.get_obj_url(sermon.aws_key_thumb)]
 
 
         return fl.render_template('search.html', form=form, res=all, media=data, cols=cols)
@@ -98,7 +117,7 @@ def find_unique_id(u_id):
     while not found:
         max_int = int(sys.maxsize)
         id = str(u_id) + "/" + str(random.randint(0, max_int-1))
-        
+
         if len(Sermons.query.filter(or_(Sermons.aws_key_media == id, Sermons.aws_key_thumb == id)).all()) == 0:
             return id
 
