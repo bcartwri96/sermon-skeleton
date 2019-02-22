@@ -15,6 +15,7 @@ def auth():
             a = User.query.filter(User.pw == fl.request.form['pw']).all()
             if a != None and len(a) == 1:
                 login_user(a[0])
+                fl.flash("Successfully logged in!")
                 # next = fl.request.args.get('next')
                 # if not is_safe_url(next):
                     # return fl.abort(400)
@@ -29,4 +30,5 @@ def auth():
 
 def out():
     logout_user()
+    fl.flash("Successfully logged out!")
     return fl.redirect(fl.url_for('index'))

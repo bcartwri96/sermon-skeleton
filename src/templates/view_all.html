@@ -1,10 +1,9 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
-
-<h3 class="display-3">View All Episodes</h3>
-
 <div class="container">
+  <h3 class="display-3">View All Sermons</h3>
+
   {% for col in sermons | batch(cols+1) %}
   <div class="row">
     {% for sermon in col %}

@@ -1,3 +1,11 @@
+.container {
+  font-family: 'Muli', sans-serif;
+}
+
+.navbar {
+  font-family: 'Muli', sans-serif;
+}
+
 #filter-side {
   padding: 15px 20px 15px 20px;
   font-size: 15px;

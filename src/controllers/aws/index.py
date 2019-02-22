@@ -11,8 +11,6 @@ class Aws:
         self.connection = None
         self.client = None
 
-    def init_client(self):
-
         # this is going to assume you've already done the config work which
         # is normal in any AWS operation (say, with AWSCLI)
 
@@ -23,7 +21,6 @@ class Aws:
         client = boto3.client('s3')
         self.client = client
 
-        return client
 
     def get_obj(self, key):
         try:
@@ -40,44 +37,37 @@ class Aws:
         Params={'Bucket': self.bucket_name, 'Key': key})
 
     def upload_resource(self, resource, type, id):
-        try:
-            data = open(resource, 'rb')
-        except IOError:
-            print("Resource doesn't exist")
-            return False
-
-        # we need to generate a random sequence for the key of the resource
-        # fetch the current max
-
-        obj = self.get_obj(id)
-        if not obj:
-            new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=id, \
-            Body=data)
-            if not new_obj:
-                print("Resource failed to upload")
+        if self.aws_exists():
+            try:
+                data = open(resource, 'rb')
+            except IOError:
+                print("Resource doesn't exist")
                 return False
+
+            # we need to generate a random sequence for the key of the resource
+            # fetch the current max
+
+            obj = self.get_obj(id)
+            if not obj:
+                new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=id, \
+                Body=data)
+                if not new_obj:
+                    print("Resource failed to upload")
+                    return False
+                else:
+                    return id
             else:
-                return id
+                print("Resource found on system already with this ID.")
+                return False
         else:
-            print("Resource found on system already with this ID.")
+            print("Can't connect to AWS.")
             return False
 
     def get_all_obj(self):
         # get all the objects in a particular bucket
         objs = []
 
-        bucket = self.connection.Bucket(self.bucket_name)
-        exists = True
-        try:
-            self.connection.meta.client.head_bucket(Bucket='mybucket')
-        except exceptions.ClientError as e:
-            # If a client error is thrown, then check that it was a 404 error.
-            # If it was a 404 error, then the bucket does not exist.
-            error_code = e.response['Error']['Code']
-            if error_code == '404':
-                exists = False
-
-        if exists:
+        if self.aws_exists():
             for b in bucket.objects.all():
                 objs.append(b)
 
@@ -85,3 +75,24 @@ class Aws:
 
         else:
             return False
+
+    def rm_objs(self, objs):
+        if self.aws_exists():
+            # get the bucket!
+            bucket = self.connection.Bucket(Bucket=self.bucket_name)
+
+            for key in bucket.objects.all():
+                key.delete()
+
+
+    def aws_exists(self):
+        bucket = self.connection.Bucket(self.bucket_name)
+        exists = True
+        try:
+            self.connection.meta.client.head_bucket(Bucket=self.bucket_name)
+        except exceptions.ClientError as e:
+            error_code = e.response['Error']['Code']
+            if error_code == '404':
+                return False
+
+        return True

@@ -13,15 +13,15 @@ from src.models.db import session
 
 aws_bucket_name = conf.read_config("MAIN", "aws_bucket_name")
 aws_profile_name = conf.read_config("MAIN", 'aws_profile_name')
+org_name = conf.read_config("MAIN", "org_name")
 
 aws = aws_lib.Aws(aws_bucket_name, aws_profile_name)
-client = aws.init_client()
 
 def main():
     try:
         text = "Hello, "+current_user.name+"!"
     except AttributeError:
-        text = "Hello anon!"
+        text = "Welcome to "+str(org_name)
     return fl.render_template('index.html', txt=text, current_user=current_user)
 
 

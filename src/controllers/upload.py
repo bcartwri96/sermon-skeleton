@@ -22,7 +22,6 @@ def up():
     form = Upload()
     if fl.request.method == 'POST':
         print(fl.request.form)
-        breakpoint
         if form.validate_on_submit():
             title_given = fl.request.form['title']
             date_given = fl.request.form['date_given']

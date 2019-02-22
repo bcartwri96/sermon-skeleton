@@ -37,11 +37,11 @@ for a in Authors.query.all():
 
 
 class Login(FlaskForm):
-    pw = PasswordField('pw', validators=[DataRequired()])
+    pw = PasswordField('Password', validators=[DataRequired()])
 
 class Upload(FlaskForm):
     title = StringField('title', validators=[DataRequired(), content_len_check])
-    date_given = DateField('date',default=date.today(), \
+    date_given = DateField('date', default=date.today(), \
     format='%d-%m-%Y', \
     validators=[DataRequired(message="You need to enter the sermon date")])
     sermon_series = SelectField('sermon_series', coerce=int, choices=series_opts)
@@ -57,13 +57,13 @@ class Upload(FlaskForm):
     choices=[(bb.id, bb.nickname) for bb in Books_Bible.query.all()])
 
 class Settings(FlaskForm):
-    add_ss_name = StringField('add_ss_name')
-    add_author_name = StringField('add_author_name')
+    add_ss_name = StringField('Add a Sermon Series')
+    add_author_name = StringField('Add an Author Name')
     org_name = StringField('org_name')
 
 class Search(FlaskForm):
-    query = StringField('query', validators=[DataRequired()])
-    author = SelectField('author', coerce=int, choices=author_opts)
-    books_bible = SelectField('books_bible', coerce=int, choices=books_bible_opts)
-    sermon_series = SelectField('sermon_series', coerce=int, choices=series_opts)
+    query = StringField('Search term', validators=[DataRequired()])
+    author = SelectField('Author', coerce=int, choices=author_opts)
+    books_bible = SelectField('Bible Books', coerce=int, choices=books_bible_opts)
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=series_opts)
     sub = SubmitField("Search")

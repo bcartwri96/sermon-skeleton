@@ -25,43 +25,10 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
   }
 </style>
 
-<script>
-  // create a progress bar
-  var options = {
-    id: 'progress',
-    target: document.getElementById('#progress')
-  };
-
-  var nanobar = new Nanobar( options );
-  var status_url = "{{ url_for('task_status', t_id=task_id) }}";
-  var done = false;
-  var complete = document.getElementById("complete");
-
-
-  function update_prog(status_url, nanobar) {
-    $.getJSON(status_url, function(data){
-      var bar = nanobar.el[0];
-      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
-        done = true;
-        console.log("done true");
-        complete.style.display = "block";
-      }
-      nanobar.go(data['current']);
-    } );
-  };
-
-  window.setInterval(function(){
-    var a = '{{task_id}}';
-    if(a != 0 && !done) {
-      update_prog(status_url, nanobar);
-    }
-  }, 500);
-
-</script>
-
 <div class="container">
+  <div id="msg" class="alert alert-primary" style="display:none;">status</div>
+
   <h4 class="display-4">Upload a Sermon</h4>
-  <div id="complete" style="display:none;"><div class="alert alert-success">Upload complete!</div></div>
   <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
       {{ form.csrf_token }}
       {{ form.title.label}} {{ form.title(class_="form-control") }}<br>
@@ -76,6 +43,39 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
   </form>
 </div>
 
+<script>
+  // create a progress bar
+  var options = {
+    id: 'progress',
+    target: document.getElementById('#progress')
+  };
+
+  var nanobar = new Nanobar( options );
+  var status_url = "{{ url_for('task_status', t_id=task_id) }}";
+  var done = false;
+  msg = document.getElementById("msg");
+
+  function update_prog(status_url, nanobar) {
+    $.getJSON(status_url, function(data){
+      var bar = nanobar.el[0];
+      if(data['state'] == 'SUCCESS' || data['state'] == 'FAILURE') {
+        done = true;
+      }
+      nanobar.go(data['current']);
+      msg.style.display = "block";
+      msg.innerHTML = data['status'];
+    } );
+  };
+
+  window.setInterval(function(){
+    var a = '{{task_id}}';
+    if(a != 0 && !done) {
+      update_prog(status_url, nanobar);
+    }
+  }, 500);
+
+</script>
+
 <script type="text/javascript">
-  $("#date_given").flatpickr();
+  $("#date_given").flatpickr({'dateFormat': 'd-m-Y'});
 </script>

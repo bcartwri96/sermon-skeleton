@@ -16,7 +16,7 @@ def main():
             organisation_name = fl.request.form['org_name']
 
             # any with same name?
-            if ss_name != None:
+            if ss_name != None or ss_name == '':
                 same_name = Sermon_Series.query.filter(Sermon_Series.name == ss_name).all()
 
                 if len(same_name) == 0:
@@ -25,7 +25,7 @@ def main():
                 else:
                     fl.flash("Sermon series name already taken!")
 
-            if auth_name != None:
+            if auth_name != None or auth_name == '':
                 same_name = Authors.query.filter(Authors.name == auth_name).all()
 
                 if len(same_name) == 0:

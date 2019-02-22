@@ -9,7 +9,8 @@ config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
                   'CELERY_RESULT_BACKEND': 'redis://localhost:6379/0',
                   'COLUMNS_VIEW_ALL':'3',
                   'AWS_BUCKET_NAME': 'sermon-skeleton',
-                  'AWS_PROFILE_NAME': 'sermon-skeleton'}
+                  'AWS_PROFILE_NAME': 'sermon-skeleton',
+                  'ORG_NAME': 'Crossroads Christian Church'}
 
 
 def write_config():

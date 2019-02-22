@@ -1,9 +1,11 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
-<h1>Login here!</h1>
-<form method="POST" action="{{ url_for('login') }}">
-    {{ form.csrf_token }}
-    {{ form.pw.label }} {{ form.pw }}
-    <input type="submit" value="Go">
-</form>
+<div class="container">
+  <h4 class="display-4">Login</h4>
+  <form method="POST" action="{{ url_for('login') }}">
+      {{ form.csrf_token }}
+      {{ form.pw.label }} {{ form.pw }}
+      <input class="btn btn-primary btn-sm" style="margin-bottom:5px;" type="submit" value="Log in">
+  </form>
+</div>

@@ -1,11 +1,20 @@
 {% include "layout.html" %}
 {% include "header.html" %}
 
-<h3 class="display-3">Settings</h3>
-<form method="POST" action="{{ url_for('settings') }}">
+<div class="container">
+  <h3 class="display-3">Settings</h3><br>
+  <form method="POST" action="{{ url_for('settings') }}">
     {{ form.csrf_token }}
-    {{ form.add_ss_name.label}} {{ form.add_ss_name }}<br>
-    {{ form.add_author_name.label}} {{ form.add_author_name }}<br>
-    {{ form.org_name.label }} {{ form.org_name }}<br>
-    <input type="submit" value="Submit">
-</form>
+    <table>
+      <tr>
+        <td>{{ form.add_ss_name.label}}</td>
+        <td>{{ form.add_ss_name }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.add_author_name.label}}</td>
+        <td>{{ form.add_author_name }}</td>
+      </tr>
+    </table>
+    <input type="submit" class="btn btn-primary" value="Submit">
+  </form>
+</div>

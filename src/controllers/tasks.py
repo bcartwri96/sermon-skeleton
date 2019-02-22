@@ -32,7 +32,6 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     bucket_name = cfg['MAIN']['AWS_BUCKET_NAME']
     profile_name = cfg['MAIN']['AWS_PROFILE_NAME']
     a = aws.Aws(profile_name, bucket_name)
-    client = a.init_client()
 
     # simpler process for this side of things... just upload directly to the
     # server.
