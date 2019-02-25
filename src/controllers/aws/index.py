@@ -21,10 +21,14 @@ class Aws:
         client = boto3.client('s3')
         self.client = client
 
-
     def get_obj(self, key):
         try:
-            return self.client.get_object(Bucket=self.bucket_name, Key=key)
+            self.client.get_object(Bucket=self.bucket_name, Key=key)
+            # triggers an exception if it doesn't exist!
+
+            # useful object is this one, though, because we can apply
+            # changes (eg. delete, copy etc.) to it.
+            return self.connection.Object(bucket_name=self.bucket_name, key=key)
         except AttributeError as e:
             print("Failed to get object with key "+key+". Doesn't exist")
             return False
@@ -34,7 +38,7 @@ class Aws:
 
     def get_obj_url(self, key):
         return self.client.generate_presigned_url('get_object', \
-        Params={'Bucket': self.bucket_name, 'Key': key})
+        Params={'Bucket': self.bucket_name, 'Key': key}, ExpiresIn=129600) #36hrs
 
     def upload_resource(self, resource, type, id):
         if self.aws_exists():
@@ -47,6 +51,7 @@ class Aws:
             # we need to generate a random sequence for the key of the resource
             # fetch the current max
 
+            # obj = self.connection.Bucket(self)(id)
             obj = self.get_obj(id)
             if not obj:
                 new_obj = self.connection.Bucket(self.bucket_name).put_object(Key=id, \
@@ -68,6 +73,7 @@ class Aws:
         objs = []
 
         if self.aws_exists():
+            bucket = self.connection.Bucket(self.bucket_name)
             for b in bucket.objects.all():
                 objs.append(b)
 
@@ -79,10 +85,13 @@ class Aws:
     def rm_objs(self, objs):
         if self.aws_exists():
             # get the bucket!
-            bucket = self.connection.Bucket(Bucket=self.bucket_name)
-
-            for key in bucket.objects.all():
-                key.delete()
+            bucket = self.connection.Bucket(self.bucket_name)
+            print("obj: "+str(objs))
+            for obj in objs:
+                obj.delete()
+            return True
+        else:
+            return False
 
 
     def aws_exists(self):

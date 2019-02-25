@@ -35,26 +35,24 @@ author_opts = [(0, "Select")]
 for a in Authors.query.all():
     author_opts.append((a.id, a.name))
 
-
 class Login(FlaskForm):
     pw = PasswordField('Password', validators=[DataRequired()])
 
 class Upload(FlaskForm):
-    title = StringField('title', validators=[DataRequired(), content_len_check])
-    date_given = DateField('date', default=date.today(), \
+    title = StringField('Title', validators=[DataRequired(), content_len_check])
+    date_given = DateField('Date', default=date.today(), \
     format='%d-%m-%Y', \
     validators=[DataRequired(message="You need to enter the sermon date")])
-    sermon_series = SelectField('sermon_series', coerce=int, choices=series_opts)
-    author = SelectField('author', coerce=int, choices=[(auth.id, \
-    auth.name) for auth in Authors.query.all()])
-    description = TextAreaField('description', validators=[content_len_check, \
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=series_opts)
+    author = SelectField('Author', coerce=int, choices=author_opts)
+    description = TextAreaField('Description', validators=[content_len_check, \
     select_field_filled])
-    thumb = FileField('thumb', validators=[
+    thumb = FileField('Thumbnail Upload', validators=[
         FileAllowed(['jpg', 'png'], 'Only image uploading is permitted.')])
-    sermon = FileField('sermon', validators=[
+    sermon = FileField('Sermon Upload', validators=[
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
-    book_bible = SelectField('book_bible', coerce=int, \
-    choices=[(bb.id, bb.nickname) for bb in Books_Bible.query.all()])
+    book_bible = SelectField('Book of the Bible', coerce=int, \
+    choices=books_bible_opts)
 
 class Settings(FlaskForm):
     add_ss_name = StringField('Add a Sermon Series')

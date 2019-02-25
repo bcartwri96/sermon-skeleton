@@ -254,7 +254,7 @@ div#player-progress-bar-container progress#song-buffered-progress[value]::-moz-p
 }
 
 div#player-middle {
-  background-color: #000;
+  background-color: rgb(43,43,72);
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 20px;

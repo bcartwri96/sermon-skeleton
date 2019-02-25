@@ -42,6 +42,12 @@ def view():
 def upload():
     return cn.upload.up()
 
+# settings
+@app.route("/settings", methods=["GET", "POST"])
+@login.login_required
+def settings():
+    return cn.settings.main()
+
 @app.route("/task_status/<t_id>")
 def task_status(t_id):
     return cn.tasks.t_stat(t_id)
@@ -50,6 +56,10 @@ def task_status(t_id):
 @cross_origin(origin="*")
 def sermon(id):
     return cn.index.load_sermon(id)
+
+@app.route("/test")
+def test():
+    return cn.index.produce_feeds()
 
 # login/out
 
@@ -60,11 +70,6 @@ def login():
 @app.route("/logout")
 def logout():
     return cn.login.out()
-
-# settings
-@app.route("/settings", methods=["GET", "POST"])
-def settings():
-    return cn.settings.main()
 
 #searching
 @app.route("/search/", methods=["GET", "POST"])

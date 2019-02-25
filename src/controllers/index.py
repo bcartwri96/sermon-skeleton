@@ -8,6 +8,8 @@ import src.conf as conf
 from src.controllers.aws import index as aws_lib
 import random
 from src.models.db import session
+from src.controllers.helper import get_links, produce_feed
+from sqlalchemy import desc
 
 # get the aws details
 
@@ -22,8 +24,23 @@ def main():
         text = "Hello, "+current_user.name+"!"
     except AttributeError:
         text = "Welcome to "+str(org_name)
-    return fl.render_template('index.html', txt=text, current_user=current_user)
 
+    # get the list of latest sermons (latest 3, if they exist!)
+    latest = Sermons.query.order_by(desc(Sermons.date_given)).limit(3).all()
+    links = get_links(latest, aws)
+
+
+    return fl.render_template('index.html', txt=text, sermons=latest, \
+    links=links, cols=3, current_user=current_user)
+
+
+def produce_feeds():
+    all = Sermons.query.all()
+    links = get_links(all, aws)
+
+    produce_feed(all, links, aws)
+
+    return "Yoiu got it solder"
 
 def show_eps():
     # show all the episodes (seen in the view_all page.)
@@ -89,7 +106,6 @@ def search():
         else:
             sermon_series_filtered = False
 
-        print(author_filtered, book_bible_filtered, sermon_series_filtered)
         all = search_master(query, author_filtered, book_bible_filtered, \
         sermon_series_filtered)
 
@@ -122,3 +138,15 @@ def find_unique_id(u_id):
             return id
 
     return False
+
+def strip_extension(file):
+    if '.' in file:
+        found = False
+        ext = []
+        for char in file:
+            if char == '.':
+                found = True
+            else:
+                if found:
+                    ext.append(char)
+        return '.'+''.join(ext)

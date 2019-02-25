@@ -13,27 +13,26 @@ def main():
         if fm.validate_on_submit():
             ss_name = fl.request.form['add_ss_name']
             auth_name = fl.request.form['add_author_name']
-            organisation_name = fl.request.form['org_name']
+            print("ss:"+ss_name+".")
+            if ss_name == '':
+                print("trigger thing")
+            print("an:"+auth_name+".")
+
+            # organisation_name = fl.request.form['org_name']
 
             # any with same name?
-            if ss_name != None or ss_name == '':
+            if ss_name != None or len(ss_name) == 0:
                 same_name = Sermon_Series.query.filter(Sermon_Series.name == ss_name).all()
 
-                if len(same_name) == 0:
-                    res = Sermon_Series(name=ss_name)
-                    session.add(res)
-                else:
-                    fl.flash("Sermon series name already taken!")
+                res = Sermon_Series(name=ss_name)
+                session.add(res)
 
-            if auth_name != None or auth_name == '':
+            if auth_name != None or len(auth_name) == 0:
                 same_name = Authors.query.filter(Authors.name == auth_name).all()
 
-                if len(same_name) == 0:
-                    res = Authors(name=auth_name)
-                    session.add(res)
-                else:
-                    fl.flash("Author name already taken!")
-
+                res = Authors(name=auth_name)
+                session.add(res)
+                
             # commit
             try:
                 session.commit()

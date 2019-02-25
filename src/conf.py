@@ -10,8 +10,9 @@ config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
                   'COLUMNS_VIEW_ALL':'3',
                   'AWS_BUCKET_NAME': 'sermon-skeleton',
                   'AWS_PROFILE_NAME': 'sermon-skeleton',
-                  'ORG_NAME': 'Crossroads Christian Church'}
-
+                  'ORG_NAME': 'Crossroads Christian Church',
+                  'ORG_EMAIL': 'itmanager@crossroads.asn.au',
+                  'ORG_LINK': 'https://crossroads.org.au'}
 
 def write_config():
     try:

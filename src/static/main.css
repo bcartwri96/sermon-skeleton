@@ -1,6 +1,13 @@
 .container {
   font-family: 'Muli', sans-serif;
 }
+.container-fluid {
+  font-family: 'Muli', sans-serif;
+}
+
+.time-container span {
+  font-family: 'Muli', sans-serif;
+}
 
 .navbar {
   font-family: 'Muli', sans-serif;

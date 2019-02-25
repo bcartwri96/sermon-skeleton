@@ -6,7 +6,7 @@ import configparser as cp
 import flask as fl
 from datetime import datetime as dt
 import time
-from src.controllers.index import find_unique_id
+from src.controllers.index import find_unique_id, strip_extension
 
 @cel.task
 def add_task(x, y):
@@ -21,6 +21,7 @@ def add_task(x, y):
 def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible):
     # init aws platform
     import src.controllers.aws.index as aws
+    import os
 
     self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Authenticating with server'})
     # get the profile name and bucket name from config
@@ -36,16 +37,17 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     # simpler process for this side of things... just upload directly to the
     # server.
     self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
-    id = find_unique_id(u_id)
-    res = a.upload_resource(filename, 'audio/mpeg', id)
+    id = find_unique_id(u_id) + strip_extension(filename)
+    res = a.upload_resource(filename, '', id)
     self.update_state(state='PROGRESS', meta={'current':70, 'total':100, 'status':'Authorising upload of image'})
-    id = find_unique_id(u_id)
-    res_thumb = a.upload_resource(fname_thumb, 'image/png', id)
-    import time
-    time.sleep(2)
+    id = find_unique_id(u_id) + strip_extension(fname_thumb)
+    res_thumb = a.upload_resource(fname_thumb, '', id)
     if res_thumb != False and res != False:
         # we've uploaded successfully
         self.update_state(state='PROGRESS', meta={'current':90, 'total':100, 'status':'Uploaded. Publishing'})
+
+        # calculate duration of the song
+        length_media = os.stat(filename).st_size
 
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 
@@ -72,7 +74,8 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
                                  sermon_series = ss, \
                                  aws_key_media = res, \
                                  aws_key_thumb = res_thumb, \
-                                 book_bible = book_bible)
+                                 book_bible = book_bible, \
+                                 length = length_media)
 
             session.add(new_sermon)
             try:
