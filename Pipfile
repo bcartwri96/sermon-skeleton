@@ -24,5 +24,6 @@ boto3 = "*"
 feedgen = "*"
 mutagen = "*"
 pillow = "*"
+pytz = "*"
 
 [dev-packages]

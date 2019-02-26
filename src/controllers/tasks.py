@@ -39,9 +39,11 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
     id = find_unique_id(u_id) + strip_extension(filename)
     res = a.upload_resource(filename, '', id)
+    os.unlink(filename)
     self.update_state(state='PROGRESS', meta={'current':70, 'total':100, 'status':'Authorising upload of image'})
     id = find_unique_id(u_id) + strip_extension(fname_thumb)
     res_thumb = a.upload_resource(fname_thumb, '', id)
+    os.unlink(fname_thumb)
     if res_thumb != False and res != False:
         # we've uploaded successfully
         self.update_state(state='PROGRESS', meta={'current':90, 'total':100, 'status':'Uploaded. Publishing'})

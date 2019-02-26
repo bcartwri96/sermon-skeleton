@@ -68,6 +68,7 @@ def main():
                         old = a.get_obj('index.png')
                         a.rm_objs([old])
                         a.upload_resource(fname_thumb, 'png', 'index.png')
+                        os.unlink(fname_thumb) #finished with it, so delete.
                 else:
                     # respond to client with failure to upload
                     fl.flash("Couldn't upload this. Size dimensions are not at\
