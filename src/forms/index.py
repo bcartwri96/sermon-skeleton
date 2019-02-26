@@ -58,6 +58,7 @@ class Settings(FlaskForm):
     add_ss_name = StringField('Add a Sermon Series')
     add_author_name = StringField('Add an Author Name')
     org_name = StringField('org_name')
+    thumb_podcast = FileField("Podcast Thumbnail")
 
 class Search(FlaskForm):
     query = StringField('Search term', validators=[DataRequired()])

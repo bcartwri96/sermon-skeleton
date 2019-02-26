@@ -23,5 +23,6 @@ sqlalchemy-searchable = "*"
 boto3 = "*"
 feedgen = "*"
 mutagen = "*"
+pillow = "*"
 
 [dev-packages]

@@ -3,7 +3,7 @@
 
 <div class="container">
   <h3 class="display-3">Settings</h3><br>
-  <form method="POST" action="{{ url_for('settings') }}">
+  <form method="POST" action="{{ url_for('settings') }}" enctype="multipart/form-data">
     {{ form.csrf_token }}
     <table>
       <tr>
@@ -14,7 +14,46 @@
         <td>{{ form.add_author_name.label}}</td>
         <td>{{ form.add_author_name }}</td>
       </tr>
+      <tr>
+        <td>{{ form.thumb_podcast.label}}</td>
+        <td>{{ form.thumb_podcast(id="file") }}</td>
+      </tr>
     </table>
     <input type="submit" class="btn btn-primary" value="Submit">
   </form>
 </div>
+
+<!-- <script>
+  var _URL = window.URL || window.webkitURL;
+  $(document).ready(function(){
+    $("#file").change(function(e) {
+      e.preventDefault();
+        var file, img;
+        console.log("1");
+        if ((file = this.files[0])) {
+            img = new Image();
+            a = img.src;
+            img.src = _URL.createObjectURL(file);
+            img.onload = function() {
+              console.log("onload");
+              if (parseInt(this.width) >= 1400 & parseInt(this.height) >= 1400) {
+                alert(this.width + " " + this.height);
+                console.log("2");
+              }
+              else {
+                console.log("3");
+                e.preventDefault();
+                img.src = a;
+              }
+              console.log("4");
+
+            };
+            img.onerror = function() {
+                alert( "not a valid file: " + file.type);
+            };
+            console.log("5");
+        }
+
+    });
+ });
+</script> -->
