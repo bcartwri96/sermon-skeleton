@@ -1,5 +1,6 @@
 import boto3 #the AWS python HTTP wrapper lib
 import botocore
+import src.scripts.index as scripts
 
 class Aws:
     # define the class which contacts and uses AWS to store data, and retreive
@@ -14,8 +15,6 @@ class Aws:
         # this is going to assume you've already done the config work which
         # is normal in any AWS operation (say, with AWSCLI)
 
-        # https://stackoverflow.com/questions/33378422/how-to-choose-an-aws-profile-when-using-boto3-to-connect-to-cloudfront
-        boto3.setup_default_session(profile_name=self.profile_name)
         con = boto3.resource('s3')
         self.connection = con
         client = boto3.client('s3')

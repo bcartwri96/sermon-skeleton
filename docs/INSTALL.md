@@ -59,6 +59,9 @@ open from that tab in step 4.
 7. Now viewing the file `~/.aws/credentials` should leave us with a profile
 there. The name of the profile is **important** because that's what this software
 uses to log in to AWS. Check that there is a profile and copy the name.ß
+
+{{ replace the aws part here with the best practices way to authenticate }}
+
 8. In the root directory, there is a file called `config.ini`. Open it, and
 enter the name of the profile where the key name is 'aws_profile_name' and also
 recall (and replace) the 'aws_bucket_name' value with the name you gave to your
