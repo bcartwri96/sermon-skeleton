@@ -12,9 +12,10 @@ except Exception:
     # should have an existing server running which we can connect to.
 
 # config
+config = cfg.ConfigParser()
+config.sections()
+
 def init():
-    config = cfg.ConfigParser()
-    config.sections()
     config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
                       'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
                       'CELERY_BROKER_URL': cel_det,
