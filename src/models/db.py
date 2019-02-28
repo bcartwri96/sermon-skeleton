@@ -12,8 +12,8 @@ try:
     # in the environment variable, but if it isn't there, then we catch the
     # exception and simply use the url we formulated earlier from development-set
     # variables
-    DATABASE_URL = scripts.get_env_variable("DATABASE_URL")
-    DB_URL = DATABASE_URL
+    DB_URL = scripts.get_env_variable("DATABASE_URL")
+    print("Connecting to db with "+DB_URL)
 except Exception:
     POSTGRES_URL = scripts.get_env_variable("POSTGRES_URL")
     POSTGRES_USER = scripts.get_env_variable("POSTGRES_USER")
