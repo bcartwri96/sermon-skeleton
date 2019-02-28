@@ -50,7 +50,7 @@ def produce_feed(sermons, links, connection):
             fe.description(description=sermon.description, isSummary=True)
             print(sermon.description)
         fe.enclosure(links[sermon.id][0], str(sermon.length), 'audio/mpeg')
-
+        
         # published takes in a datetime object, but we record date (time is
         # irrelevant...) so we need to instantiate a time to supply Feedgen
         date = datetime.combine(sermon.date_given, datetime.min.time())

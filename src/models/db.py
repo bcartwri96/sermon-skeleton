@@ -15,6 +15,10 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USE
 
 # when sending to the REAL WORLD!
 try:
+    # i.e Heroku add-on postgres gives us the DB url to connect to right here
+    # in the environment variable, but if it isn't there, then we catch the
+    # exception and simply use the url we formulated earlier from development-set
+    # variables
     DATABASE_URL = scripts.index.get_env_variable("DATABASE_URL")
     DB_URL = DATABASE_URL
 except Exception:

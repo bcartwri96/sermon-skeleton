@@ -1,18 +1,30 @@
 import configparser as cfg
+import src.scripts.index as scripts
+
+try:
+    cel_det = scripts.get_env_variable('REDIS_URL')
+    # we want to use the heroku set add-on redis server if it's available,
+    # but if we can't find it, then it isn't set and we must be running
+    # the dev server, so we connect to it instead
+except Exception:
+    cel_det = 'redis://localhost:6379/0'
+    # we run redis automatically from the /dev.sh screen, which means we
+    # should have an existing server running which we can connect to.
 
 # config
-config = cfg.ConfigParser()
-config.sections()
-config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
-                  'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
-                  'CELERY_BROKER_URL': 'redis://localhost:6379/0',
-                  'CELERY_RESULT_BACKEND': 'redis://localhost:6379/0',
-                  'COLUMNS_VIEW_ALL':'3',
-                  'AWS_BUCKET_NAME': 'sermon-skeleton',
-                  'AWS_PROFILE_NAME': 'sermon-skeleton',
-                  'ORG_NAME': 'Crossroads Christian Church',
-                  'ORG_EMAIL': 'itmanager@crossroads.asn.au',
-                  'ORG_LINK': 'https://crossroads.org.au'}
+def init():
+    config = cfg.ConfigParser()
+    config.sections()
+    config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
+                      'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
+                      'CELERY_BROKER_URL': cel_det,
+                      'CELERY_RESULT_BACKEND': cel_det,
+                      'COLUMNS_VIEW_ALL':'3',
+                      'AWS_BUCKET_NAME': 'sermon-skeleton',
+                      'AWS_PROFILE_NAME': 'sermon-skeleton',
+                      'ORG_NAME': 'Crossroads Christian Church',
+                      'ORG_EMAIL': 'itmanager@crossroads.asn.au',
+                      'ORG_LINK': 'https://crossroads.org.au'}
 
 def write_config():
     try:

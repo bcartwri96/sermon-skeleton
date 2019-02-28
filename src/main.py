@@ -6,6 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # update config
+config.init()
 config.config.set('MAIN', 'APP_NAME', app.name)
 config.write_config()
 
