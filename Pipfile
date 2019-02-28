@@ -25,5 +25,6 @@ feedgen = "*"
 mutagen = "*"
 pillow = "*"
 pytz = "*"
+gunicorn = "*"
 
 [dev-packages]
