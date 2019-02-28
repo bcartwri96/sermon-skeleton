@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath main:app
+web: flask run src/main.py
