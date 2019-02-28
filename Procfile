@@ -1,1 +1,1 @@
-web: flask run src/main.py
+web: export FLASK_APP=src/main.py && flask run
