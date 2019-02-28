@@ -6,13 +6,6 @@ import sqlalchemy as sa
 from sqlalchemy.orm import scoped_session, sessionmaker, configure_mappers
 from sqlalchemy.ext.declarative import declarative_base
 
-# the values of those depend on your setup
-POSTGRES_URL = scripts.get_env_variable("POSTGRES_URL")
-POSTGRES_USER = scripts.get_env_variable("POSTGRES_USER")
-POSTGRES_PW = scripts.get_env_variable("POSTGRES_PW")
-POSTGRES_DB = scripts.get_env_variable("POSTGRES_DB")
-DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
-
 # when sending to the REAL WORLD!
 try:
     # i.e Heroku add-on postgres gives us the DB url to connect to right here
@@ -22,7 +15,12 @@ try:
     DATABASE_URL = scripts.index.get_env_variable("DATABASE_URL")
     DB_URL = DATABASE_URL
 except Exception:
-    pass
+    POSTGRES_URL = scripts.get_env_variable("POSTGRES_URL")
+    POSTGRES_USER = scripts.get_env_variable("POSTGRES_USER")
+    POSTGRES_PW = scripts.get_env_variable("POSTGRES_PW")
+    POSTGRES_DB = scripts.get_env_variable("POSTGRES_DB")
+    DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
+
 
 # connect
 engine = sa.create_engine(DB_URL, convert_unicode=True)
