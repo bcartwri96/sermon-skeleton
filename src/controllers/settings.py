@@ -23,7 +23,7 @@ def main():
         a = aws.Aws(bn, pn)
 
         # process form
-        print(str(fm[data]))
+        print(str(fm.data))
         if fm.validate_on_submit():
             ss_name = fl.request.form['add_ss_name']
             auth_name = fl.request.form['add_author_name']
