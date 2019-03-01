@@ -22,7 +22,7 @@ import src.controllers as cn
 
 
 # security key
-SECRET_KEY = "helllo here is a secure key\x\x\x\x\x\x\x\s\cs\e\cw\"
+SECRET_KEY = "helllo here is a secure key/scds/e/fv/ad/vf/fewefvnwfinaekfnvalk"
 app.config['SECRET_KEY'] = SECRET_KEY
 # app.config['SERVER_NAME'] = ""
 
