@@ -1,1 +1,1 @@
-web: export FLASK_APP=src/main.py && flask run --port 80
+web: gunicorn src main:app
