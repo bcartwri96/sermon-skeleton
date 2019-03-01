@@ -119,3 +119,8 @@ probably > pick a region and then > create.
 
 **Note:** Now, the system should recognise the new credentials on start-up and use them,
 so there isn't anything else to configure there.
+
+**IMPORTANT NOTE WITH HEROKU DB**
+Check the intrinsic docs in `src/models/db` to see difference between reset_db()
+and create_db(). Briefly, create runs locally and reset runs on Heroku (which already
+  creates a DB for us, and won't let us tamper with that)
