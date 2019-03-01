@@ -11,6 +11,7 @@ def auth():
     if fl.request.method == "GET":
         return fl.render_template("login/in.html", form=form)
     else:
+        print(str(form.data))
         if form.validate_on_submit():
             a = User.query.filter(User.pw == fl.request.form['pw']).all()
             if a != None and len(a) == 1:
