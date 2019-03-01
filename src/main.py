@@ -14,7 +14,7 @@ import sqlalchemy as sa
 import src.models.db as db
 import flask_login as login
 import os
-import src.celery as cel
+import src.celery_config as cel
 import src.controllers as cn
 # note that atm, controllers needs config already set up before it can
 # do anything, so we exclude the line -> run so config is written, then we

@@ -1,4 +1,4 @@
-from src.celery import cel
+from src.celery_config import cel
 from src.models.models import Sermons, Sermon_Series, Authors, Books_Bible
 from src.models.db import session
 from src.scripts.index import get_env_variable
