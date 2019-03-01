@@ -22,12 +22,14 @@ import src.controllers as cn
 
 
 # security key
-SECRET_KEY = os.urandom(32)
+SECRET_KEY = "helllo here is a secure key\x\x\x\x\x\x\x\s\cs\e\cw\"
 app.config['SECRET_KEY'] = SECRET_KEY
+# app.config['SERVER_NAME'] = ""
 
 # produce the login manager
 lm = login.LoginManager()
 lm.init_app(app)
+lm.login_view = '/login'
 
 @app.route("/")
 # @login.login_required
