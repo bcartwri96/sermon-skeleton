@@ -11,17 +11,43 @@ class Aws:
         self.profile_name = profile_name
         self.connection = None
         self.client = None
+        self.session = None
+
+        # get the env variables to try connecting
+        access_id = "AKIAIU7C5IVKU7XWFETQ"
+        access_key = "ccV1DZC/gOWeAwcZFHTaaQJHJ89cghqz23/qNMLl"
+
 
         # this is going to assume you've already done the config work which
         # is normal in any AWS operation (say, with AWSCLI)
-
-        con = boto3.resource('s3')
+        # by default, AWS tries to connect using env vars before anything else
+        # so see whether that's worked!
+        session = boto3.Session( aws_access_key_id=access_id, aws_secret_access_key=access_key)
+        con = session.resource('s3')
+        client = boto3.client('s3', aws_access_key_id=access_id, aws_secret_access_key=access_key)
         self.connection = con
-        client = boto3.client('s3')
         self.client = client
+        if self.aws_exists():
+            # we connected!
+            # add the session, because it was right.
+            self.session = session
+        else:
+            # previous failed, cautiously delete conneciton and client
+            self.connection = None
+            self.client = None
+            # if fails to connect, then we need to get the profile vars.
+            print("Connecting over profile...")
+            boto3.setup_default_session(profile_name=self.profile_name)
+            con = boto3.resource('s3')
+            client = boto3.client('s3')
+
+            self.connection = con
+            self.client = client
 
     def get_obj(self, key):
         try:
+            print(self.bucket_name)
+            print(key)
             self.client.get_object(Bucket=self.bucket_name, Key=key)
             # triggers an exception if it doesn't exist!
 
@@ -95,12 +121,12 @@ class Aws:
 
     def aws_exists(self):
         bucket = self.connection.Bucket(self.bucket_name)
-        exists = True
         try:
             self.connection.meta.client.head_bucket(Bucket=self.bucket_name)
-        except exceptions.ClientError as e:
+            return True
+        except botocore.exceptions.ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code == '404':
                 return False
 
-        return True
+        return False

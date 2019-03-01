@@ -8,14 +8,6 @@ from datetime import datetime as dt
 import time
 from src.controllers.index import find_unique_id, strip_extension
 
-@cel.task
-def add_task(x, y):
-    # here is a task we'll need to upload the stuff after we return the user
-    # their webpage and then we can continually update them via a neat JSON
-    # API called `upload_progress` or something
-    import time
-    time.sleep(2)
-    print("dome some sleeping")
 
 @cel.task(bind=True)
 def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible):
@@ -33,23 +25,22 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     bucket_name = cfg['MAIN']['AWS_BUCKET_NAME']
     profile_name = cfg['MAIN']['AWS_PROFILE_NAME']
     a = aws.Aws(profile_name, bucket_name)
-
     # simpler process for this side of things... just upload directly to the
     # server.
     self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
     id = find_unique_id(u_id) + strip_extension(filename)
     res = a.upload_resource(filename, '', id)
-    os.unlink(filename)
     self.update_state(state='PROGRESS', meta={'current':70, 'total':100, 'status':'Authorising upload of image'})
     id = find_unique_id(u_id) + strip_extension(fname_thumb)
     res_thumb = a.upload_resource(fname_thumb, '', id)
-    os.unlink(fname_thumb)
     if res_thumb != False and res != False:
         # we've uploaded successfully
         self.update_state(state='PROGRESS', meta={'current':90, 'total':100, 'status':'Uploaded. Publishing'})
 
         # calculate duration of the song
         length_media = os.stat(filename).st_size
+        os.unlink(fname_thumb)
+        os.unlink(filename)
 
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 

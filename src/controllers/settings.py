@@ -25,15 +25,25 @@ def main():
         # process form
         print(str(fm.data))
         if fm.validate_on_submit():
-            ss_name = fl.request.form['add_ss_name']
-            auth_name = fl.request.form['add_author_name']
-            thumb_podcast = fl.request.files['thumb_podcast']
+            ss_name = ""
+            auth_name = ""
+            thumb_podcast = ""
+            try:
+                ss_name = fl.request.form['add_ss_name']
+                auth_name = fl.request.form['add_author_name']
+                thumb_podcast = fl.request.files['thumb_podcast']
 
-            print("ss:"+ss_name+".")
-            if ss_name == '':
-                print("trigger thing")
-            print("an:"+auth_name+".")
-
+                print("ss:"+ss_name+".")
+                if ss_name == '':
+                    print("trigger thing")
+                print("an:"+auth_name+".")
+            except Exception:
+                if not ss_name:
+                    ss_name = ""
+                if not auth_name:
+                    auth_name = ""
+                if not thumb_podcast:
+                    thumb_podcast = None
             # organisation_name = fl.request.form['org_name']
 
             # any with same name?
