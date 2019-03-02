@@ -13,38 +13,53 @@ class Aws:
         self.client = None
         self.session = None
 
-        # get the env variables to try connecting
-        access_id = scripts.get_env_variable('aws_access_key_id')
-        access_key = scripts.get_env_variable('aws_secret_access_key')
+        try:
+            # get the env variables to try connecting
+            a_id = scripts.get_env_variable('aws_access_key_id')
+            a_k = scripts.get_env_variable('aws_secret_access_key')
 
-        # this is going to assume you've already done the config work which
-        # is normal in any AWS operation (say, with AWSCLI)
-        # by default, AWS tries to connect using env vars before anything else
-        # so see whether that's worked!
-        session = boto3.Session(aws_access_key_id=access_id, aws_secret_access_key=access_key)
-        con = session.resource('s3')
-        client = boto3.client('s3', aws_access_key_id=access_id, aws_secret_access_key=access_key)
-        self.connection = con
-        self.client = client
-        if self.aws_exists():
-            # we connected!
-            # add the session, because it was right.
-            self.session = session
-        else:
-            # previous failed, cautiously delete conneciton and client
-            self.connection = None
-            self.client = None
-            # if fails to connect, then we need to get the profile vars.
-            print("Connecting over profile...")
+            # by default, AWS tries to connect using env vars before anything else
+            # so see whether that's worked!
+            session = boto3.session.Session(aws_access_key_id=a_id, aws_secret_access_key=a_k)
+            print(session)
+            con = session.resource('s3')
+            print(str(con))
+            client = session.client('s3')
+            print(str(client))
+            self.connection = con
+            self.client = client
             try:
-                boto3.setup_default_session(profile_name=self.profile_name)
-                con = boto3.resource('s3')
-                client = boto3.client('s3')
+                con.meta.client.head_bucket(Bucket=self.bucket_name)
+            except Exception:
+                print("This didn't work at all")
+                
+            if self.aws_exists():
+                print("Connected over env vars!")
+                # we connected!
+                # add the session, because it was right.
+                self.session = session
+                return None # we don't need to do anything else so return
+            else:
+                print("Failed to connect")
+                pass #program flow continuing is enough try another method
+        except Exception:
+                print("failed to fetch the env vars.")
+                pass #program flow continuing is enough try another method
 
-                self.connection = con
-                self.client = client
-            except botocore.exceptions.ProfileNotFound:
-                print("Unable to find profile... unable to connect.")
+        # previous failed, cautiously delete conneciton and client
+        self.connection = None
+        self.client = None
+        # if fails to connect, then we need to get the profile vars.
+        print("Connecting over profile...")
+        try:
+            boto3.setup_default_session(profile_name=self.profile_name)
+            con = boto3.resource('s3')
+            client = boto3.client('s3')
+
+            self.connection = con
+            self.client = client
+        except botocore.exceptions.ProfileNotFound:
+            print("Unable to find profile... unable to connect.")
 
     def get_obj(self, key):
         try:
