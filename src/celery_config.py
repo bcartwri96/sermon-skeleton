@@ -4,5 +4,5 @@ import configparser as cfg
 config = cfg.ConfigParser()
 config.read('config.ini')
 
-cel = Celery(config['MAIN']['APP_NAME'], broker=config['MAIN']['CELERY_BROKER_URL'], backend=config['MAIN']['CELERY_RESULT_BACKEND'])
+cel = Celery(config['MAIN']['APP_NAME'], broker=config['MAIN']['CELERY_BROKER_URL'], backend=config['MAIN']['CELERY_RESULT_BACKEND'], redis_max_connections=10)
 cel.conf.update(config)
