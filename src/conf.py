@@ -17,7 +17,7 @@ config = cfg.ConfigParser()
 config.sections()
 
 def init():
-    config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
+    config['MAIN'] = {'UPLOADS_FOLDER': '/tmp',
                       'PROJ_ROOT': os.getcwd()+"/",
                       'CELERY_BROKER_URL': cel_det,
                       'CELERY_RESULT_BACKEND': cel_det,

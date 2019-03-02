@@ -15,8 +15,7 @@ from flask_login import current_user
 # get conf
 cfg = cp.ConfigParser()
 cfg.read('config.ini') # read it in.
-upload_loc = cfg['MAIN']['PROJ_ROOT']+ \
-             cfg['MAIN']['UPLOADS_FOLDER']
+upload_loc = cfg['MAIN']['UPLOADS_FOLDER']
 
 def up():
     form = Upload()
