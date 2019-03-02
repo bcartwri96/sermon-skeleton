@@ -28,11 +28,7 @@ class Aws:
             print(str(client))
             self.connection = con
             self.client = client
-            try:
-                con.meta.client.head_bucket(Bucket=self.bucket_name)
-            except Exception:
-                print("This didn't work at all")
-                
+            
             if self.aws_exists():
                 print("Connected over env vars!")
                 # we connected!

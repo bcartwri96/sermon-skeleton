@@ -1,5 +1,6 @@
 import configparser as cfg
 import src.scripts.index as scripts
+import os
 
 try:
     cel_det = scripts.get_env_variable('REDIS_URL')
@@ -17,7 +18,7 @@ config.sections()
 
 def init():
     config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
-                      'PROJ_ROOT': '/Users/bencartwright/projects/sermon-skeleton/',
+                      'PROJ_ROOT': os.get_cwd(),
                       'CELERY_BROKER_URL': cel_det,
                       'CELERY_RESULT_BACKEND': cel_det,
                       'COLUMNS_VIEW_ALL':'3',
