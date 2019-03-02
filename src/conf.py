@@ -18,7 +18,7 @@ config.sections()
 
 def init():
     config['MAIN'] = {'UPLOADS_FOLDER': 'uploads/',
-                      'PROJ_ROOT': os.get_cwd(),
+                      'PROJ_ROOT': os.getcwd()+"/",
                       'CELERY_BROKER_URL': cel_det,
                       'CELERY_RESULT_BACKEND': cel_det,
                       'COLUMNS_VIEW_ALL':'3',

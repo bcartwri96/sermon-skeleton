@@ -28,7 +28,7 @@ class Aws:
             print(str(client))
             self.connection = con
             self.client = client
-            
+
             if self.aws_exists():
                 print("Connected over env vars!")
                 # we connected!
