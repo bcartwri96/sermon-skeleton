@@ -17,12 +17,11 @@ class Aws:
         access_id = scripts.get_env_variable('aws_access_key_id')
         access_key = scripts.get_env_variable('aws_secret_access_key')
 
-
         # this is going to assume you've already done the config work which
         # is normal in any AWS operation (say, with AWSCLI)
         # by default, AWS tries to connect using env vars before anything else
         # so see whether that's worked!
-        session = boto3.Session( aws_access_key_id=access_id, aws_secret_access_key=access_key)
+        session = boto3.Session(aws_access_key_id=access_id, aws_secret_access_key=access_key)
         con = session.resource('s3')
         client = boto3.client('s3', aws_access_key_id=access_id, aws_secret_access_key=access_key)
         self.connection = con
@@ -46,8 +45,7 @@ class Aws:
                 self.client = client
             except botocore.exceptions.ProfileNotFound:
                 print("Unable to find profile... unable to connect.")
-                return False
-                
+
     def get_obj(self, key):
         try:
             print(self.bucket_name)
