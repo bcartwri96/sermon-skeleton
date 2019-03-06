@@ -99,3 +99,11 @@ def shutdown_session(exception=None):
 def load_user(user_id):
     from src.models.models import User
     return User.query.get(user_id)
+
+@app.context_processor
+def inject_globals():
+    import datetime as dt
+    return dict(
+        org_name = config.read_config('MAIN', 'ORG_NAME'),
+        cc_year = dt.datetime.now().year
+    )

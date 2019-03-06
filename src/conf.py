@@ -14,19 +14,24 @@ except Exception:
 
 # config
 config = cfg.ConfigParser()
-config.sections()
 
 def init():
-    config['MAIN'] = {'UPLOADS_FOLDER': '/tmp',
-                      'PROJ_ROOT': os.getcwd()+"/",
-                      'CELERY_BROKER_URL': cel_det,
-                      'CELERY_RESULT_BACKEND': cel_det,
-                      'COLUMNS_VIEW_ALL':'3',
-                      'AWS_BUCKET_NAME': 'sermon-skeleton',
-                      'AWS_PROFILE_NAME': 'sermon-skeleton',
-                      'ORG_NAME': 'Crossroads Christian Church',
-                      'ORG_EMAIL': 'itmanager@crossroads.asn.au',
-                      'ORG_LINK': 'https://crossroads.org.au'}
+    try:
+        with open('config.ini', 'r+') as f:
+            config.read_file(f)
+
+    except IOError:
+        print("Can't open the config file. Writing a default")
+        config['MAIN'] = {'UPLOADS_FOLDER': '/tmp',
+                          'PROJ_ROOT': os.getcwd()+"/",
+                          'CELERY_BROKER_URL': cel_det,
+                          'CELERY_RESULT_BACKEND': cel_det,
+                          'COLUMNS_VIEW_ALL':'3',
+                          'AWS_BUCKET_NAME': 'sermon-skeleton',
+                          'AWS_PROFILE_NAME': 'sermon-skeleton',
+                          'ORG_NAME': 'Crossroads Christian Church',
+                          'ORG_EMAIL': 'itmanager@crossroads.asn.au',
+                          'ORG_LINK': 'https://crossroads.org.au'}
 
 def write_config():
     try:
