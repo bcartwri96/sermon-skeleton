@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import src.conf as config
 from flask_cors import CORS, cross_origin
 
@@ -44,6 +44,18 @@ def view():
 @login.login_required
 def upload():
     return cn.upload.up()
+
+@app.route("/get_presigned")
+@login.login_required
+def get_presigned():
+    name = request.args.get('file')
+    type = request.args.get('type')
+    return cn.upload.get_presigned(name, type)
+
+@app.route("/upload_file", methods=["POST"])
+@login.login_required
+def upload_file():
+    return cn.upload.post_upload()
 
 # settings
 @app.route("/settings", methods=["GET", "POST"])

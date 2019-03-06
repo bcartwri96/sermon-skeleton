@@ -48,11 +48,14 @@ class Upload(FlaskForm):
     description = TextAreaField('Description', validators=[content_len_check, \
     select_field_filled])
     thumb = FileField('Thumbnail Upload', validators=[
-        FileAllowed(['jpg', 'png'], 'Only image uploading is permitted.')])
+        FileAllowed(['png'], 'Only image uploading is permitted.')])
+    sermon_link = HiddenField('sermon_link')
+    thumb_link = HiddenField('thumb_link')
     sermon = FileField('Sermon Upload', validators=[
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
     book_bible = SelectField('Book of the Bible', coerce=int, \
     choices=books_bible_opts)
+    size_sermon = HiddenField('size_sermon')
 
 class Settings(FlaskForm):
     add_ss_name = StringField('Add a Sermon Series')

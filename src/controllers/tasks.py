@@ -10,12 +10,13 @@ from src.controllers.index import find_unique_id, strip_extension
 
 
 @cel.task(bind=True)
-def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible):
+def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, length):
     # init aws platform
     import src.controllers.aws.index as aws
     import os
 
-    self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Authenticating with server'})
+    print("upload_aws begins...")
+    self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verifying uploads'})
     # get the profile name and bucket name from config
 
     # get conf
@@ -27,21 +28,14 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     a = aws.Aws(profile_name, bucket_name)
     # simpler process for this side of things... just upload directly to the
     # server.
-    self.update_state(state='PROGRESS', meta={'current':20, 'total':100, 'status':'Authorising upload'})
-    id = find_unique_id(u_id) + strip_extension(filename)
-    res = a.upload_resource(filename, '', id)
-    self.update_state(state='PROGRESS', meta={'current':70, 'total':100, 'status':'Authorising upload of image'})
-    id = find_unique_id(u_id) + strip_extension(fname_thumb)
-    res_thumb = a.upload_resource(fname_thumb, '', id)
-    if res_thumb != False and res != False:
-        # we've uploaded successfully
-        self.update_state(state='PROGRESS', meta={'current':90, 'total':100, 'status':'Uploaded. Publishing'})
 
-        # calculate duration of the song
-        length_media = os.stat(filename).st_size
-        os.unlink(fname_thumb)
-        os.unlink(filename)
-
+    # check the uploads went to the server
+    print("approaching the object head construction stage")
+    if a.get_obj_head(filename) and a.get_obj_head(fname_thumb):
+        print("object phase is complete")
+        self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verified. Processing...'})
+        import time
+        time.sleep(5)
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 
         # get the object for the sermon series
@@ -55,33 +49,33 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
 
         # ensure that the title is unique
         unique = Sermons.query.filter(Sermons.title == title_given).all()
-        print(res)
-        print(res_thumb)
+
+        # get the size of the file
+        length = a.get_obj_size(filename)
+
+
         if len(unique) == 0:
             new_sermon = Sermons(title = title_given, \
                                  date_given = date_given, \
                                  description = description, \
                                  author = author, \
-                                 tmp_media=filename, \
-                                 tmp_thumbnail = fname_thumb, \
                                  sermon_series = ss, \
-                                 aws_key_media = res, \
-                                 aws_key_thumb = res_thumb, \
+                                 aws_key_media = filename, \
+                                 aws_key_thumb = fname_thumb, \
                                  book_bible = book_bible, \
-                                 length = length_media)
+                                 length = length)
 
             session.add(new_sermon)
             try:
                 session.commit()
-                self.update_state(state='PROGRESS', meta={'current':100, 'total':100, 'status':'Done'})
+                self.update_state(state='SUCCESS')
             except KeyError:
                 self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Error with database'})
                 # return False
         else:
-            self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Filename not unique'})
+            self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Failed to upload'})
     else:
         self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Failed to upload'})
-
 
 
 @cel.task(bind=True)

@@ -29,19 +29,31 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
   <div id="msg" class="alert alert-primary" style="display:none;">status</div>
 
   <h4 class="display-4">Upload a Sermon</h4>
+  <div class="row">
+    <div class="col-md-5">
+      {{ form.thumb.label }} {{ form.thumb(class_="form-control", style="border:none;") }}<br>
+    </div>
+    <div class="col-md-5">
+      {{ form.sermon.label }} {{ form.sermon(class_="form-control", style="border:none;", id="sermon") }}<br>
+    </div>
+  </div>
+
   <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
       {{ form.csrf_token }}
       {{ form.title.label}} {{ form.title(class_="form-control") }}<br>
       {{ form.author.label }}{{ form.author(class_="form-control") }}<br>
-      {{ form.thumb.label }} {{ form.thumb(class_="form-control", style="border:none;") }}<br>
+      {{ form.thumb_link(id="link_store_thumb") }}
       {{ form.date_given.label }} {{ form.date_given(class_="form-control", id="date_given", readonly="false") }}<br>
-      {{ form.sermon.label }} {{ form.sermon(class_="form-control", style="border:none;") }}<br>
+      {{ form.sermon_link(id="link_store") }}
       {{ form.book_bible.label }}{{ form.book_bible(class_="form-control") }}<br>
       {{ form.sermon_series.label }} {{ form.sermon_series(class_="form-control") }}<br>
       {{ form.description.label }} {{ form.description(class_="form-control") }}<br>
-      <input type="submit" value="Upload" class="btn btn-primary">
+      {{ form.size_sermon(id="size_sermon") }}
+      <input id="butt" type="submit" value="Upload" class="btn btn-primary">
   </form>
 </div>
+
+<div id="img"></div>
 
 <script>
   // create a progress bar
@@ -73,6 +85,135 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
       update_prog(status_url, nanobar);
     }
   }, 500);
+
+
+  // when a user selects the file, we want to generate a presigned url for them
+  // to upload the data directly to S3 immediately.
+  $("#sermon").change(function() {
+    // disable the button
+    var butt = document.getElementById("butt");
+    butt.disabled = true;
+
+    var s = document.getElementById("sermon");
+    // only one files here, so fetch it
+    var f = s.files[0];
+    var f_size = null;
+    var link = "{{ url_for('get_presigned')}}?file="+f.name+"&type="+f.type;
+
+    var fd = new FormData();
+
+    $.getJSON(link, function(data) {
+      fields = JSON.parse(data.url);
+
+      for(key in fields.data.fields) {
+        fd.append(key, fields.data.fields[key]);
+      };
+
+      fd.append('file',f);
+
+      // now upload
+      $.ajax({
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt) {
+            f_size = evt.total;
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              nanobar.go(percentComplete*100);
+            }
+          }, false);
+          return xhr;
+        },
+
+        url: fields.url,
+        type: 'PUT',
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: function(response){
+          console.log("res: "+response);
+          if(response != 0){
+              $("#img").attr("src",response);
+              $(".preview img").show(); // Display image element
+          }
+
+          // we want to now record the link we've uploaded to the system
+          $("#link_store").val(fields.url);
+
+          // get the size and send it along with the form
+          $("#size_sermon").val(f_size);
+          // reenable the button
+          butt.disabled = false;
+
+          // now remove the data from the upload of other data
+        },
+        failure: function(resp) {
+          console.log("fail response: "+resp);
+        }
+      });
+    });
+  });
+
+
+  $("#thumb").change(function() {
+    // firstly, lock the submit button
+    var butt = document.getElementById("butt");
+    butt.disabled = true;
+
+    var thumb = document.getElementById("thumb");
+    // only one files here, so fetch it
+    var f = thumb.files[0];
+    var link = "{{ url_for('get_presigned')}}?file="+f.name+"&type="+f.type;
+
+    var fd = new FormData();
+
+    $.getJSON(link, function(data) {
+      fields = JSON.parse(data.url);
+
+      for(key in fields.data.fields) {
+        fd.append(key, fields.data.fields[key]);
+      };
+
+      fd.append('file',f);
+
+      // now upload
+      $.ajax({
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              nanobar.go(percentComplete*100);
+            }
+          }, false);
+          return xhr;
+        },
+
+        url: fields.url,
+        type: 'PUT',
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: function(response){
+          console.log("res: "+response);
+          if(response != 0){
+              $("#img").attr("src",response);
+              $(".preview img").show(); // Display image element
+          }
+
+          // we want to now record the link we've uploaded to the system
+          $("#link_store_thumb").val(fields.url);
+          butt.disabled = false;
+
+        },
+        failure: function(resp) {
+          console.log("fail response: "+resp);
+        }
+      });
+    });
+  });
 
 </script>
 

@@ -17,6 +17,24 @@ cfg = cp.ConfigParser()
 cfg.read('config.ini') # read it in.
 upload_loc = cfg['MAIN']['UPLOADS_FOLDER']
 
+def get_presigned(name, type):
+    # we need to calculate a presigned url using AWS and then send it back to
+    # the client as JSON
+
+    import src.controllers.aws.index as aws
+    profile_name = cfg['MAIN']['AWS_PROFILE_NAME']
+    bucket_name = cfg['MAIN']['AWS_BUCKET_NAME']
+
+    a = aws.Aws(profile_name, bucket_name)
+
+    return fl.jsonify({'url':a.generate_presigned_upload_url(name, type)})
+
+def post_upload():
+    files = fl.request.files['file']
+    print("Files: "+str(files))
+
+    return "hello"
+
 def up():
     form = Upload()
     if fl.request.method == 'POST':
@@ -28,6 +46,9 @@ def up():
             description = fl.request.form['description']
             author = fl.request.form['author']
             book_bible = fl.request.form['book_bible']
+            sermon_link = fl.request.form['sermon_link']
+            thumb_link = fl.request.form['thumb_link']
+            length = fl.request.form['size_sermon']
 
             # check that filename is not taken, otherwise continue.
             q = Sermons.query.filter(Sermons.title == title_given).all()
@@ -35,30 +56,17 @@ def up():
                 fl.flash("Title already taken")
                 return fl.render_template('upload.html', form=form)
 
-            # upload media to server
-            f = fl.request.files['thumb']
-            filename = secure_filename(f.filename)
-            fname_thumb = os.path.join(upload_loc, filename)
-            # todo: pls ensure this gracefully fails!
-            f.save(fname_thumb)
-
-            # JSON can't serialise a file object, so convert to bytes
-            # save_to_disk.delay(filename, fname_thumb)
-
-            # upload to server first
-            f = fl.request.files['sermon']
-            filename = secure_filename(f.filename)
-            fname_media = os.path.join(upload_loc, filename)
-            # todo: ensure this gracefully fails!
-            f.save(fname_media)
             # save_to_disk.delay(filename, fname_media)
-            upload_a = upload_aws.apply_async(args=[fname_media, title_given, description, author, date_given, fname_thumb, ss, current_user.id, book_bible])
+            upload_a = upload_aws.apply_async(args=[sermon_link, title_given, \
+            description, author, date_given, thumb_link, ss, current_user.id, \
+            book_bible, length])
 
-            # upload = upload_podbean.apply_async(args=[fname_media, title_given, description, date_given, fname_thumb, ss])
+            # upload = upload_podbean.apply_async(args=[fname_media, \
+            # title_given, description, date_given, fname_thumb, ss])
             # init the workers which upload the content to drive and
             # podcast distro
 
-            return fl.render_template('upload.html', form=form, loc=fname_media, task_id=upload_a.id)
+            return fl.render_template('upload.html', form=form, task_id=upload_a.id)
         else:
             fl.flash("Unsuccessful validation")
             fl.flash(str(form.errors))

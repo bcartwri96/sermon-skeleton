@@ -54,8 +54,28 @@ class Aws:
 
             self.connection = con
             self.client = client
+            if self.aws_exists():
+                print("Connected over profile!")
+            else:
+                print("Failed to connect")
         except botocore.exceptions.ProfileNotFound:
             print("Unable to find profile... unable to connect.")
+
+    def get_obj_head(self, key):
+        try:
+            head = self.client.head_object(Bucket=self.bucket_name, Key=key)
+            return head
+        except botocore.exceptions.ClientError as e:
+            e_code = e.response['Error']['Code']
+            if e_code == '403':
+                print("Failed to authenticate for item "+str(key))
+                return False
+            elif e_code == '404':
+                print("failed to locate for item "+str(key))
+                return False
+            else:
+                print("failed for unknown reason with key "+str(key))
+                return False
 
     def get_obj(self, key):
         try:
@@ -74,9 +94,32 @@ class Aws:
             print("Failed to get object with key "+key+". Doesn't exist")
             return False
 
+    def get_obj_size(self, key):
+        head = self.get_obj_head(key)
+        if head:
+            return head['ContentLength']
+        else:
+            return 0
+
     def get_obj_url(self, key):
         return self.client.generate_presigned_url('get_object', \
         Params={'Bucket': self.bucket_name, 'Key': key}, ExpiresIn=129600) #36hrs
+
+    def generate_presigned_upload_url(self, name, type):
+        from src.controllers.index import find_unique_id, strip_extension
+        from flask_login import current_user
+        import json
+
+        if self.aws_exists():
+            key = find_unique_id(current_user.id) + strip_extension(name)
+            print("Key: "+str(key))
+
+            post_url = self.client.generate_presigned_post(Bucket=self.bucket_name, Key=key,Fields = {"acl": "public-read", "Content-Type": type}, Conditions = [{"acl": "public-read"}, {"Content-Type": type}], ExpiresIn=300)
+
+            return json.dumps({'data':post_url, 'url': 'https://%s.s3.amazonaws.com/%s' % (self.bucket_name, key)})
+
+        else:
+            return False
 
     def upload_resource(self, resource, type, id):
         if self.aws_exists():
