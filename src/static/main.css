@@ -57,3 +57,32 @@
  .sidenav {padding-top: 15px;}
  .sidenav a {font-size: 18px;}
 }
+
+
+/* sermon card section */
+.sermon-card {
+  margin-top: 50px; /* line up with other element */
+  background-color: rgb(220, 215, 215);
+  background-color: #f8f9fa;
+}
+
+.sermon-card .card-title {
+  margin: 10px 10px;
+}
+
+.sermon-card .row {
+  margin: 15px 15px 10px 10px;
+}
+
+.sermon-card .col {
+  margin: 20px;
+}
+
+.sermon-card .row span {
+  vertical-align: middle;
+  padding-bottom: 25px;
+}
+
+.sermon-card .material-icons {
+  font-size: 36px;
+}

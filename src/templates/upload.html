@@ -106,12 +106,6 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
       // we need the key, so let's get it and deal with it first!
       $("#link_store").val(fields.key);
 
-      for(key in fields.data.fields) {
-        fd.append(key, fields.data.fields[key]);
-      };
-
-      fd.append('file',f);
-
       // now upload
       $.ajax({
         xhr: function() {
@@ -129,7 +123,7 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
 
         url: fields.url,
         type: 'PUT',
-        data: fd,
+        data: f,
         headers: {
           "x-amz-acl":"bucket-owner-full-control"
         },
@@ -174,11 +168,6 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
 
       // same as above
       $("#link_store_thumb").val(fields.key);
-      for(key in fields.data.fields) {
-        fd.append(key, fields.data.fields[key]);
-      };
-
-      fd.append('file',f);
 
       // now upload
       $.ajax({
@@ -196,7 +185,7 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
 
         url: fields.url,
         type: 'PUT',
-        data: fd,
+        data: f,
         headers: {
           "x-amz-acl":"bucket-owner-full-control",
           "Content-Type":"image"

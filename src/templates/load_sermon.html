@@ -15,44 +15,67 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/amplitude/dist/css/app.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/amplitude/dist/css/app.map.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/amplitude-player.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class="container">
-  <h3 class="display-3">{{ sermon.title }}</h3>
-
-  <div class="row justify-content-md-center">
-    <div class="col col-lg-2"></div>
-    <div class="col-md-auto">
-      <div class="grid-x grid-padding-x">
-        <div class="large-12 medium-12 small-12 cell">
-          <div id="single-song-player">
-            <center><img data-amplitude-song-info="cover_art_url" width="250px"/></center>
-            <div class="player-middle" id="player-middle">
-              <span data-amplitude-song-info="name" class="song-name"></span><br>
-              <span data-amplitude-song-info="artist"></span>
-            </div>
-            <div class="bottom-container">
-              <progress class="amplitude-song-played-progress" id="song-played-progress"></progress>
-
-              <div class="time-container">
-                <span class="current-time">
-                  <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
-                </span>
-                <span class="duration">
-                  <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
-                </span>
-              </div>
-
-              <div class="control-container">
-                <div class="amplitude-play-pause" id="play-pause"></div>
-              </div>
-            </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card sermon-card">
+        <h3 class="card-title">{{ sermon.title }}</h3>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6"><i width="100%" height=50px class="material-icons">date_range</i><span>Date Given</span></div>
+            <div class="col-sm-6">{{ sermon.date_given }}</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6"><i width="100%" height=50px class="material-icons">view_carousel</i><span>Sermon Series</span></div>
+            <div class="col-sm-6">{{ sermon.sermon_series.name }}</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6"><i width="100%" height=50px class="material-icons">account_circle</i><span>Preacher</span></div>
+            <div class="col-sm-6">{{ sermon.author.name }}</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12"><i class="material-icons">description</i><span>Description</span></div><br>
+            <div class="col-sm-12" style="margin-left: 20px; margin-right:20px;"><span>{{ sermon.description }}</span></div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col col-lg-2"></div>
+
+    <div class="col-lg-6">
+      <div class="row justify-content-md-center">
+        <div class="col col-lg-2"></div>
+        <div class="col-md-auto">
+          <div class="grid-x grid-padding-x">
+            <div class="large-12 medium-12 small-12 cell">
+              <div id="single-song-player">
+                <center><img data-amplitude-song-info="cover_art_url" width="250px"/></center>
+                <div class="bottom-container">
+                  <progress class="amplitude-song-played-progress" id="song-played-progress"></progress>
+
+                  <div class="time-container">
+                    <span class="current-time">
+                      <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
+                    </span>
+                    <span class="duration">
+                      <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
+                    </span>
+                  </div>
+
+                  <div class="control-container">
+                    <div class="amplitude-play-pause" id="play-pause"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-lg-2"></div>
+      </div>
+    </div>
   </div>
-</div>
 
 <p>{{ head }}</p>
 
