@@ -114,9 +114,13 @@ class Aws:
             key = find_unique_id(current_user.id) + strip_extension(name)
             print("Key: "+str(key))
 
-            post_url = self.client.generate_presigned_post(Bucket=self.bucket_name, Key=key,Fields = {"acl": "public-read", "Content-Type": type}, Conditions = [{"acl": "public-read"}, {"Content-Type": type}], ExpiresIn=300)
+            post_url = self.client.generate_presigned_post(Bucket=self.bucket_name, \
+            Key=key,Fields = {"acl": "public-read", "Content-Type": type}, \
+            Conditions = [{"acl": "public-read"}, {"Content-Type": type}], ExpiresIn=300)
 
-            return json.dumps({'data':post_url, 'url': 'https://%s.s3.amazonaws.com/%s' % (self.bucket_name, key)})
+            return json.dumps({'data':post_url, \
+            'url': 'https://%s.s3.amazonaws.com/%s' % (self.bucket_name, key), \
+            'key': key})
 
         else:
             return False

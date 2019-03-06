@@ -86,7 +86,6 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
     }
   }, 500);
 
-
   // when a user selects the file, we want to generate a presigned url for them
   // to upload the data directly to S3 immediately.
   $("#sermon").change(function() {
@@ -99,11 +98,13 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
     var f = s.files[0];
     var f_size = null;
     var link = "{{ url_for('get_presigned')}}?file="+f.name+"&type="+f.type;
-
     var fd = new FormData();
 
     $.getJSON(link, function(data) {
       fields = JSON.parse(data.url);
+
+      // we need the key, so let's get it and deal with it first!
+      $("#link_store").val(fields.key);
 
       for(key in fields.data.fields) {
         fd.append(key, fields.data.fields[key]);
@@ -129,6 +130,9 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
         url: fields.url,
         type: 'PUT',
         data: fd,
+        headers: {
+          "x-amz-acl":"bucket-owner-full-control"
+        },
         processData: false,
         contentType: false,
         success: function(response){
@@ -137,9 +141,6 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
               $("#img").attr("src",response);
               $(".preview img").show(); // Display image element
           }
-
-          // we want to now record the link we've uploaded to the system
-          $("#link_store").val(fields.url);
 
           // get the size and send it along with the form
           $("#size_sermon").val(f_size);
@@ -171,6 +172,8 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
     $.getJSON(link, function(data) {
       fields = JSON.parse(data.url);
 
+      // same as above
+      $("#link_store_thumb").val(fields.key);
       for(key in fields.data.fields) {
         fd.append(key, fields.data.fields[key]);
       };
@@ -194,6 +197,10 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
         url: fields.url,
         type: 'PUT',
         data: fd,
+        headers: {
+          "x-amz-acl":"bucket-owner-full-control",
+          "Content-Type":"image"
+        },
         processData: false,
         contentType: false,
         success: function(response){
@@ -202,10 +209,6 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
               $("#img").attr("src",response);
               $(".preview img").show(); // Display image element
           }
-
-          // we want to now record the link we've uploaded to the system
-          $("#link_store_thumb").val(fields.url);
-          butt.disabled = false;
 
         },
         failure: function(resp) {
