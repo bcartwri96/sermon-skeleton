@@ -12,6 +12,8 @@ except Exception:
     # we run redis automatically from the /dev.sh screen, which means we
     # should have an existing server running which we can connect to.
 
+cel_det = scripts.get_env_variable('REDIS_URL')
+
 # config
 config = cfg.ConfigParser()
 
