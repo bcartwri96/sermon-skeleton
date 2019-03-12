@@ -8,7 +8,8 @@ try:
     # but if we can't find it, then it isn't set and we must be running
     # the dev server, so we connect to it instead
 except Exception:
-    cel_det = 'redis://localhost:6379/0'
+    pass
+    # cel_det = 'redis://localhost:6379/0'
     # we run redis automatically from the /dev.sh screen, which means we
     # should have an existing server running which we can connect to.
 
