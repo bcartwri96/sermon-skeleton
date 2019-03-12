@@ -35,6 +35,8 @@ def init():
                           'ORG_EMAIL': 'itmanager@crossroads.asn.au',
                           'ORG_LINK': 'https://crossroads.org.au'}
 
+        write_config()
+
 def write_config():
     try:
         with open('config.ini', 'w') as conf:
