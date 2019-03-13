@@ -1,14 +1,15 @@
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 
 {% if not current_user.is_admin %}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
       <img src="{{ url_for('static', filename='img/ico.ico') }}" width="30" height="30" class="d-inline-block align-top" alt="">
       {{ org_name }}
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="collapse navbar-collapse" id="navbar">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
         <a class="nav-item nav-link" href="{{ url_for('view') }}">View All</a>
@@ -20,7 +21,7 @@
   </nav>
 {% elif current_user.is_admin %}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
       <img src="{{ url_for('static', filename='img/ico.ico') }}" width="30" height="30" class="d-inline-block align-top" alt="">
       {{ org_name}}
     </a>

@@ -8,7 +8,8 @@ try:
 except Exception:
     bro = cf.read_config('MAIN', 'CELERY_BROKER_URL')
     back = cf.read_config('MAIN', 'CELERY_RESULT_BACKEND')
-    
+
+print("broker is: "+str(bro))
 cel = Celery(cf.read_config('MAIN', 'APP_NAME'), \
 broker = bro, \
 backend = back, \
