@@ -23,17 +23,23 @@ def select_field_filled(form, field):
         raise ValidationError("Cannot be empty")
 
 # we need to be able to have a select option
-series_opts = [(0, "Select")]
-for ss in Sermon_Series.query.all():
-    series_opts.append((ss.id, ss.name))
+def get_series():
+    series_opts = [(0, "Select")]
+    for ss in Sermon_Series.query.all():
+        series_opts.append((ss.id, ss.name))
+    return series_opts
 
-books_bible_opts = [(0, "Select")]
-for bb in Books_Bible.query.all():
-    books_bible_opts.append((bb.id, bb.name))
+def get_bb_opts():
+    books_bible_opts = [(0, "Select")]
+    for bb in Books_Bible.query.all():
+        books_bible_opts.append((bb.id, bb.name))
+    return books_bible_opts
 
-author_opts = [(0, "Select")]
-for a in Authors.query.all():
-    author_opts.append((a.id, a.name))
+def get_author_opts():
+    author_opts = [(0, "Select")]
+    for a in Authors.query.all():
+        author_opts.append((a.id, a.name))
+    return author_opts
 
 class Login(FlaskForm):
     pw = PasswordField('Password', validators=[DataRequired()])
@@ -43,8 +49,8 @@ class Upload(FlaskForm):
     date_given = DateField('Date', default=date.today(), \
     format='%d-%m-%Y', \
     validators=[DataRequired(message="You need to enter the sermon date")])
-    sermon_series = SelectField('Sermon Series', coerce=int, choices=series_opts)
-    author = SelectField('Author', coerce=int, choices=author_opts)
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series())
+    author = SelectField('Author', coerce=int, choices=get_author_opts())
     description = TextAreaField('Description', validators=[content_len_check, \
     select_field_filled])
     thumb = FileField('Thumbnail Upload', validators=[
@@ -54,7 +60,7 @@ class Upload(FlaskForm):
     sermon = FileField('Sermon Upload', validators=[
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
     book_bible = SelectField('Book of the Bible', coerce=int, \
-    choices=books_bible_opts)
+    choices=get_bb_opts())
     size_sermon = HiddenField('size_sermon')
 
 class Settings(FlaskForm):
@@ -65,7 +71,7 @@ class Settings(FlaskForm):
 
 class Search(FlaskForm):
     query = StringField('Search term', validators=[DataRequired()])
-    author = SelectField('Author', coerce=int, choices=author_opts)
-    books_bible = SelectField('Bible Books', coerce=int, choices=books_bible_opts)
-    sermon_series = SelectField('Sermon Series', coerce=int, choices=series_opts)
+    author = SelectField('Author', coerce=int, choices=get_author_opts())
+    books_bible = SelectField('Bible Books', coerce=int, choices=get_bb_opts())
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series())
     sub = SubmitField("Search")

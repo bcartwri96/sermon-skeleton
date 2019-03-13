@@ -1,7 +1,7 @@
 import flask as fl
 from flask_wtf.file import FileField, FileRequired
 from werkzeug.utils import secure_filename
-from src.forms.index import Upload
+from src.forms.index import Upload, get_series, get_bb_opts, get_author_opts
 import os
 import configparser as cp
 from src.controllers.podbean import index as pod
@@ -72,4 +72,9 @@ def up():
             fl.flash(str(form.errors))
             return fl.render_template('upload.html', form=form)
     else:
+        # force the form to refresh the options in the database
+        form.author.choices =get_author_opts()
+        form.sermon_series.choices = get_series()
+        form.book_bible.chices = get_bb_opts()
+
         return fl.render_template('upload.html', form=form, task_id=0)
