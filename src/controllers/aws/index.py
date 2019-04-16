@@ -1,6 +1,7 @@
 import boto3 #the AWS python HTTP wrapper lib
 import botocore
 import src.scripts.index as scripts
+import urllib.parse
 
 class Aws:
     # define the class which contacts and uses AWS to store data, and retreive
@@ -102,8 +103,17 @@ class Aws:
             return 0
 
     def get_obj_url(self, key):
-        return self.client.generate_presigned_url('get_object', \
+        obj = self.client.generate_presigned_url('get_object', \
         Params={'Bucket': self.bucket_name, 'Key': key}, ExpiresIn=129600) #36hrs
+        
+        # this should be escaped properly inside the AWS Boto3 code, but it wasn't by
+        # Amazon engineers, so here I am doing something dodgy. 
+        # Attempts were made at using urllib and requests to parse it properly, but I
+        # couldn't easily figure out how to correct that, so this simply replaces the
+        # offending character with a correct one for HTML.
+        obj = obj.replace('&', '&amp;') # this isn't side-effecting for some reason!
+
+        return obj
 
     def generate_presigned_upload_url(self, name, type):
         from src.controllers.index import find_unique_id, strip_extension

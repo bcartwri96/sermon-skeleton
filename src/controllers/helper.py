@@ -12,6 +12,7 @@ def get_links(sermon_db, aws):
     for sermon in sermon_db:
         # dict the sermon id with the urls required so we can
         # fetch client side
+        print("results: "+aws.get_obj_url(sermon.aws_key_thumb))
         data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
         aws.get_obj_url(sermon.aws_key_thumb)]
     return data
