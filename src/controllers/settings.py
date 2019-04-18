@@ -1,4 +1,4 @@
-from src.models.models import Sermon_Series, Authors
+from src.models.models import Sermon_Series, Authors, User
 import flask as fl
 from src.forms.index import Settings
 from src.models.db import session
@@ -6,6 +6,8 @@ import configparser as cp
 from werkzeug.utils import secure_filename
 import os
 from src.controllers.aws import index as aws
+import bcrypt
+from flask_login import current_user
 
 def main():
     fm = Settings()
@@ -28,10 +30,14 @@ def main():
             ss_name = ""
             auth_name = ""
             thumb_podcast = ""
+            pw = ""
+            pw_c = ""
             try:
                 ss_name = fl.request.form['add_ss_name']
                 auth_name = fl.request.form['add_author_name']
                 thumb_podcast = fl.request.files['thumb_podcast']
+                pw = fl.request.form['pw']
+                pw_c = fl.request.form['pw_c']
 
                 print("ss:"+ss_name+".")
                 if ss_name == '':
@@ -44,8 +50,21 @@ def main():
                     auth_name = ""
                 if not thumb_podcast:
                     thumb_podcast = None
+
             # organisation_name = fl.request.form['org_name']
 
+            # do we need to reset the password?
+            if pw != "" and pw_c != "":
+                if pw == pw_c:
+                    # hash it
+                    hashed = bcrypt.hashpw(pw, bcrypt.gensalt( 12 ))
+                    # get the current user
+                    cu = User.query.get(current_user.id)
+                    cu.pw = hashed
+                    session.add(cu)
+                else:
+                    fl.flash("Passwords provided don't match")
+            
             # any with same name?
             if len(ss_name) != 0:
                 same_name = Sermon_Series.query.filter(Sermon_Series.name == ss_name).all()
@@ -60,7 +79,7 @@ def main():
                 res = Authors(name=auth_name)
                 session.add(res)
 
-            if thumb_podcast != None:
+            if thumb_podcast.filename != '':
                 # we got a new file to upload to server
                 from PIL import Image
 

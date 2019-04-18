@@ -68,6 +68,9 @@ class Settings(FlaskForm):
     add_author_name = StringField('Add an Author Name')
     org_name = StringField('org_name')
     thumb_podcast = FileField("Podcast Thumbnail")
+    # changing the password to get into the admin interface here.
+    pw = PasswordField('Password', validators=[DataRequired()])
+    pw_c = PasswordField('Confirm Password', validators=[DataRequired()])
 
 class Search(FlaskForm):
     query = StringField('Search term', validators=[DataRequired()])

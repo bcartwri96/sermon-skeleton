@@ -27,5 +27,7 @@ pillow = "*"
 pytz = "*"
 gunicorn = "*"
 jinja2 = ">=2.10.1"
+passlib = "*"
+bcrypt = "*"
 
 [dev-packages]

@@ -13,7 +13,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
     email = Column(String(120), unique=True)
-    pw = Column(String(120), nullable=False)
+    pw = Column(String(360), nullable=False)
 
     def __init__(self, name=None, email=None, pw=None):
         self.name = name

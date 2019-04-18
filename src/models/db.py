@@ -56,6 +56,7 @@ def create_tables():
     """Works the models into the db in using the ORM"""
     print('Creating tables.')
     import csv
+    import bcrypt
     # import the models used to describe the tables we're creating (using the
     # ORM). Link: http://flask-sqlalchemy.pocoo.org/2.3/models/
     import src.models.models as m
@@ -63,7 +64,9 @@ def create_tables():
     session.commit()
 
     # let's add the admin user
-    u = m.User(name="Admin", email="admin", pw="1234")
+    pw_hashed = bcrypt.hashpw('1234'.encode('utf-8'), bcrypt.gensalt(12))
+    print("Hashed PW"+str(pw_hashed))
+    u = m.User(name="Admin", email="admin", pw=pw_hashed.decode('ascii'))
     session.add(u)
 
     # let's add all the books of the bible

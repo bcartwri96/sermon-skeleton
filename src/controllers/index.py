@@ -87,22 +87,30 @@ def search():
     cols = int(config['MAIN']['COLUMNS_VIEW_ALL'])
 
     if fl.request.method == 'GET':
-        return fl.render_template("search.html", form=form, cols=cols)
-    else:
-        query = fl.request.form['query']
+        form_res = fl.request.args
+        try:
+            query = form_res['query']
+            author = form_res['author']
+            bb = form_res['books_bible']
+            ss = form_res['sermon_series']
+        except KeyError:
+            # if the dict can't pick up the query, it 
+            # is because the user is loading page initially.
+            return fl.render_template("search.html", form=form, cols=cols)            
+
 
         # if they actually aren't empty, then we want to pass on the info
         # to be used to adjust the results
-        if not (fl.request.form['author'] == "0"):
-            author_filtered = fl.request.form['author']
+        if not (author == "0"):
+            author_filtered = author
         else:
             author_filtered = False
-        if not (fl.request.form['books_bible'] == "0"):
-            book_bible_filtered = fl.request.form['books_bible']
+        if not (bb == "0"):
+            book_bible_filtered = bb
         else:
             book_bible_filtered = False
-        if not (fl.request.form['sermon_series'] == "0"):
-            sermon_series_filtered = fl.request.form['sermon_series']
+        if not ( ss == "0"):
+            sermon_series_filtered = ss
         else:
             sermon_series_filtered = False
 
@@ -118,7 +126,6 @@ def search():
                 # fetch client side
                 data[sermon.id] = [aws.get_obj_url(sermon.aws_key_media), \
                 aws.get_obj_url(sermon.aws_key_thumb)]
-
 
         return fl.render_template('search.html', form=form, res=all, media=data, cols=cols)
 
