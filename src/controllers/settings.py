@@ -57,10 +57,11 @@ def main():
             if pw != "" and pw_c != "":
                 if pw == pw_c:
                     # hash it
-                    hashed = bcrypt.hashpw(pw, bcrypt.gensalt( 12 ))
+                    hashed = bcrypt.hashpw(pw.encode('utf-8'), bcrypt.gensalt( 12 ))
                     # get the current user
                     cu = User.query.get(current_user.id)
-                    cu.pw = hashed
+                    cu.pw = hashed.decode('ascii') # in src/models/db learn about why it 
+                    # needs to be decoded for ascii before injected into DB
                     session.add(cu)
                 else:
                     fl.flash("Passwords provided don't match")
