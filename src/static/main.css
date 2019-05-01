@@ -16,7 +16,7 @@
 #filter-side {
   padding: 15px 20px 15px 20px;
   font-size: 15px;
-  background-color: lightgrey;
+  background-color: #f8f9fa !important;
   display: block;
   font-weight: bold;
   font-kerning: auto;
