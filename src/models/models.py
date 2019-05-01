@@ -62,6 +62,7 @@ class Sermons(Base):
     author = relationship("Authors")
     book_bible_id = Column(Integer, ForeignKey("books_bible.id"))
     book_bible = relationship("Books_Bible")
+    chapter_book = Column(String(10))
     views = Column(Integer, default=0)
     length = Column(Float)
 
@@ -72,7 +73,7 @@ class Sermons(Base):
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
     sermon_series=None, sermon_series_id=None, description=None, \
     aws_key_media=None, aws_key_thumb=None, author=None, author_id=None, \
-    views=None, book_bible=None, book_bible_id=None, length=None):
+    views=None, book_bible=None, book_bible_id=None, chapter_book=None, length=None):
         self.title = title
         self.description = description
         self.author = author
@@ -89,6 +90,7 @@ class Sermons(Base):
         self.aws_key_thumb = aws_key_thumb
         self.book_bible = book_bible
         self.book_bible_id = book_bible_id
+        self.chapter_book = chapter_book
         self.views = views
         self.length = length
 

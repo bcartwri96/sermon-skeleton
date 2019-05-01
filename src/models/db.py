@@ -65,7 +65,6 @@ def create_tables():
 
     # let's add the admin user
     pw_hashed = bcrypt.hashpw('1234'.encode('utf-8'), bcrypt.gensalt(12))
-    print("Hashed PW"+str(pw_hashed))
     u = m.User(name="Admin", email="admin", pw=pw_hashed.decode('ascii'))
     session.add(u)
 

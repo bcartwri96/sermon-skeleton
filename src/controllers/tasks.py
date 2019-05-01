@@ -10,12 +10,11 @@ from src.controllers.index import find_unique_id, strip_extension
 
 
 @cel.task(bind=True)
-def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, length):
+def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, chapter_book, length):
     # init aws platform
     import src.controllers.aws.index as aws
     import os
 
-    print("upload_aws begins...")
     self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verifying uploads'})
     # get the profile name and bucket name from config
 
@@ -34,8 +33,6 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     if a.get_obj_head(filename) and a.get_obj_head(fname_thumb):
         print("object phase is complete")
         self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verified. Processing...'})
-        import time
-        time.sleep(5)
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 
         # get the object for the sermon series
@@ -63,6 +60,7 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
                                  aws_key_media = filename, \
                                  aws_key_thumb = fname_thumb, \
                                  book_bible = book_bible, \
+                                 chapter_book = chapter_book, \
                                  length = length)
 
             session.add(new_sermon)

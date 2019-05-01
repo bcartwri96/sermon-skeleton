@@ -29,7 +29,7 @@ class Aws:
             print(str(client))
             self.connection = con
             self.client = client
-
+            print(self.aws_exists())
             if self.aws_exists():
                 print("Connected over env vars!")
                 # we connected!
@@ -37,30 +37,33 @@ class Aws:
                 self.session = session
                 return None # we don't need to do anything else so return
             else:
-                print("Failed to connect")
+                print("Failed to connect over env vars.")
                 pass #program flow continuing is enough try another method
         except Exception:
                 print("failed to fetch the env vars.")
                 pass #program flow continuing is enough try another method
 
-        # previous failed, cautiously delete conneciton and client
-        self.connection = None
-        self.client = None
-        # if fails to connect, then we need to get the profile vars.
-        print("Connecting over profile...")
-        try:
-            boto3.setup_default_session(profile_name=self.profile_name)
-            con = boto3.resource('s3')
-            client = boto3.client('s3')
+        print(self.connection, self.client)
+        if not self.connection and not self.client:
+            # previous failed, cautiously delete connection and client
+            self.connection = None
+            self.client = None
+            # if fails to connect, then we need to get the profile vars.
+            print("Connecting over profile...")
+            try:
+                boto3.setup_default_session(profile_name=self.profile_name)
+                con = boto3.resource('s3')
+                client = boto3.client('s3')
 
-            self.connection = con
-            self.client = client
-            if self.aws_exists():
-                print("Connected over profile!")
-            else:
-                print("Failed to connect")
-        except botocore.exceptions.ProfileNotFound:
-            print("Unable to find profile... unable to connect.")
+                self.connection = con
+                self.client = client
+                if self.aws_exists():
+                    print("Connected over profile!")
+                else:
+                    print("Failed to connect over profile!")
+            except botocore.exceptions.ProfileNotFound:
+                print("Unable to find profile... unable to connect.")
+        
 
     def get_obj_head(self, key):
         try:

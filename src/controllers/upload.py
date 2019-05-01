@@ -46,6 +46,7 @@ def up():
             description = fl.request.form['description']
             author = fl.request.form['author']
             book_bible = fl.request.form['book_bible']
+            chapter_book = fl.request.form['chapter_book']
             sermon_link = fl.request.form['sermon_link']
             thumb_link = fl.request.form['thumb_link']
             length = fl.request.form['size_sermon']
@@ -59,12 +60,7 @@ def up():
             # save_to_disk.delay(filename, fname_media)
             upload_a = upload_aws.apply_async(args=[sermon_link, title_given, \
             description, author, date_given, thumb_link, ss, current_user.id, \
-            book_bible, length])
-
-            # upload = upload_podbean.apply_async(args=[fname_media, \
-            # title_given, description, date_given, fname_thumb, ss])
-            # init the workers which upload the content to drive and
-            # podcast distro
+            book_bible, chapter_book, length])
 
             return fl.render_template('upload.html', form=form, task_id=upload_a.id)
         else:

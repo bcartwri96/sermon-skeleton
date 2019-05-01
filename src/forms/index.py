@@ -61,6 +61,7 @@ class Upload(FlaskForm):
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
     book_bible = SelectField('Book of the Bible', coerce=int, \
     choices=get_bb_opts())
+    chapter_book = StringField('Chapter(/s) of Bible Preached Upon', validators=[DataRequired()])
     size_sermon = HiddenField('size_sermon')
 
 class Settings(FlaskForm):
@@ -69,8 +70,8 @@ class Settings(FlaskForm):
     org_name = StringField('org_name')
     thumb_podcast = FileField("Podcast Thumbnail")
     # changing the password to get into the admin interface here.
-    pw = PasswordField('Password', validators=[DataRequired()])
-    pw_c = PasswordField('Confirm Password', validators=[DataRequired()])
+    pw = PasswordField('Password')
+    pw_c = PasswordField('Confirm Password')
 
 class Search(FlaskForm):
     query = StringField('Search term', validators=[DataRequired()])
