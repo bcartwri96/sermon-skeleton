@@ -6,7 +6,7 @@ def get_env_variable(name):
     try:
         return os.environ[name]
     except KeyError:
-        message = "Expected environment variable '{}' not set.".format(name)
+        message = "Expected environment variable '{}' not set unfortunately.".format(name)
         raise Exception(message)
 
 def init_aws_bucket(bucket_name, location):
