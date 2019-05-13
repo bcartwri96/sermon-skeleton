@@ -23,7 +23,7 @@ except Exception:
 
 
 # connect
-engine = sa.create_engine(DB_URL, convert_unicode=True)
+engine = sa.create_engine(DB_URL, convert_unicode=True, echo=True)
 session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

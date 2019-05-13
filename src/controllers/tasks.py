@@ -36,7 +36,9 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 
         # get the object for the sermon series
+        print("initial int is: "+str(ss))
         ss = Sermon_Series.query.get(int(ss))
+        print(str(ss))
 
         #get the object for the author
         author = Authors.query.get(int(author))
