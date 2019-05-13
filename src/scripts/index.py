@@ -5,13 +5,13 @@ import os
 def get_env_variable(name):
     try:
         return os.environ[name]
-    except KeyError:
+    except KeyError, Exception:
         message = "Expected environment variable '{}' not set.".format(name)
         raise Exception(message)
 
 def init_aws_bucket(bucket_name, location):
     """
-    the purpose of this is to have a single command which can create the sort of 
+    the purpose of this is to have a single command which can create the sort of
     bucket (and bucket environment) we will need to get this system working nicely
 
     """
@@ -27,7 +27,7 @@ def init_aws_bucket(bucket_name, location):
         # by default, AWS tries to connect using env vars before anything else
         # so see whether that's worked!
         session = aws.session.Session(aws_access_key_id=a_id, aws_secret_access_key=a_k)
-        
+
         s3 = session.resource('s3')
         client = session.client('s3')
 

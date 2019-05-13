@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 class User(Base):
     __tablename__ = 'users'
-    __table_args__ = {'extend_existing': True}
+    # __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
@@ -96,7 +96,7 @@ class Sermons(Base):
 
 class Authors(Base):
     __tablename__ = 'authors'
-    __table_args__ = {'extend_existing': True}
+    # __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
@@ -116,7 +116,7 @@ class Sermon_Series(Base):
 
 class Books_Bible(Base):
     __tablename__ = 'books_bible'
-    __table_args__ = {'extend_existing': True}
+    # __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
     name = Column(String(30))

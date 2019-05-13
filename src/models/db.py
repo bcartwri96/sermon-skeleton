@@ -55,13 +55,14 @@ def reset_db():
 def create_tables():
     """Works the models into the db in using the ORM"""
     print('Creating tables.')
-    import csv
-    import bcrypt
     # import the models used to describe the tables we're creating (using the
     # ORM). Link: http://flask-sqlalchemy.pocoo.org/2.3/models/
     import src.models.models as m
     Base.metadata.create_all(bind=engine)
     session.commit()
+
+    import csv
+    import bcrypt
 
     # let's add the admin user
     pw_hashed = bcrypt.hashpw('1234'.encode('utf-8'), bcrypt.gensalt(12))

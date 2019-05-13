@@ -18,14 +18,12 @@ def main():
         # get conf
         cfg = cp.ConfigParser()
         cfg.read('config.ini') # read it in.
-        upload_loc = cfg['MAIN']['PROJ_ROOT']+ \
-                     cfg['MAIN']['UPLOADS_FOLDER']
+        upload_loc = cfg['MAIN']['UPLOADS_FOLDER']
         bn = cfg['MAIN']['aws_bucket_name']
         pn = cfg['MAIN']['aws_profile_name']
         a = aws.Aws(bn, pn)
 
         # process form
-        print(str(fm.data))
         if fm.validate_on_submit():
             ss_name = ""
             auth_name = ""
@@ -60,12 +58,12 @@ def main():
                     hashed = bcrypt.hashpw(pw.encode('utf-8'), bcrypt.gensalt( 12 ))
                     # get the current user
                     cu = User.query.get(current_user.id)
-                    cu.pw = hashed.decode('ascii') # in src/models/db learn about why it 
+                    cu.pw = hashed.decode('ascii') # in src/models/db learn about why it
                     # needs to be decoded for ascii before injected into DB
                     session.add(cu)
                 else:
                     fl.flash("Passwords provided don't match")
-            
+
             # any with same name?
             if len(ss_name) != 0:
                 same_name = Sermon_Series.query.filter(Sermon_Series.name == ss_name).all()
