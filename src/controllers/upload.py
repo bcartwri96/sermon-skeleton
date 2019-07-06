@@ -9,7 +9,7 @@ from src.models.models import Sermons
 from datetime import datetime as dt
 from src.models.db import session
 from src.scripts.index import get_env_variable
-from src.controllers.tasks import upload_podbean, upload_aws
+from src.controllers.tasks import upload_podbean, upload_aws, edit_process
 from flask_login import current_user
 
 # get conf
@@ -74,3 +74,50 @@ def up():
         form.book_bible.chices = get_bb_opts()
 
         return fl.render_template('upload.html', form=form, task_id=0)
+
+
+def edit_sermon(id):
+    from src.forms.index import Edit_Sermon as form
+
+    s = Sermons.query.get(id)
+    fm = form(obj=s)    
+
+    if fl.request.method == 'GET':
+        fm.title.default = s.title
+        fm.author.default = s.author.id
+        fm.date_given.default = s.date_given
+        fm.book_bible.default = s.book_bible.id
+        fm.chapter_book.default = s.chapter_book
+        fm.sermon_series.default = s.sermon_series.id
+        fm.description.default = s.description    
+        fm.process()
+        print("book bible:", fm.book_bible.default)
+
+        return fl.render_template('edit_sermon.html', id=id, task_id=0, form=fm, ob=s)
+    else:
+        if fm.validate_on_submit():
+            print("EDIT POST?")
+            title_given = fl.request.form['title']
+            date_given = fl.request.form['date_given']
+            ss = fl.request.form['sermon_series']
+            description = fl.request.form['description']
+            author = fl.request.form['author']
+            book_bible = fl.request.form['book_bible']
+            chapter_book = fl.request.form['chapter_book']
+            
+            edit_id = edit_process.apply_async(args=[id, title_given, description, author, date_given, ss, book_bible, chapter_book])
+
+            # return a HTTP resp.
+            return fl.render_template('edit_sermon.html', id=id, task_id=edit_id, form=fm, ob=s)
+
+def delete_sermon(id):
+    s = Sermons.query.get(id)
+    if s:
+        session.delete(s)
+        try:
+            session.commit()
+        except KeyError:
+            fl.flash("Failed to delete!")
+        return fl.redirect(fl.url_for('index'))
+    else:
+        return edit_sermon(id)

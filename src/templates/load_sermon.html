@@ -19,6 +19,9 @@
 
 <div class="container">
   <div class="row">
+    {% if current_user.is_admin %}
+    <a href="{{ url_for('edit_sermon', id=sermon.id) }}">Edit sermon details</a>
+    {% endif %}
     <div class="col-lg-6">
       <div class="card sermon-card">
         <h3 class="card-title">{{ sermon.title }}</h3>

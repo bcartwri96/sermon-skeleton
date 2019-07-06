@@ -18,6 +18,7 @@ aws_profile_name = conf.read_config("MAIN", 'aws_profile_name')
 org_name = conf.read_config("MAIN", "org_name")
 
 aws = aws_lib.Aws(aws_bucket_name, aws_profile_name)
+print("AWS: ",aws.bucket_name)
 
 def main():
     try:
@@ -145,6 +146,7 @@ def find_unique_id(u_id):
             return id
 
     return False
+
 
 def strip_extension(file):
     if '.' in file:

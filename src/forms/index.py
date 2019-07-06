@@ -79,3 +79,17 @@ class Search(FlaskForm):
     books_bible = SelectField('Bible Books', coerce=int, choices=get_bb_opts())
     sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series())
     sub = SubmitField("Search")
+
+class Edit_Sermon(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), content_len_check])
+    date_given = DateField('Date', default=date.today(), \
+    format='%d-%m-%Y', \
+    validators=[DataRequired(message="You need to enter the sermon date")])
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series())
+    author = SelectField('Author', coerce=int, choices=get_author_opts(), default=0)
+    description = TextAreaField('Description', validators=[content_len_check, \
+    select_field_filled])
+    book_bible = SelectField('Book of the Bible', coerce=int, \
+    choices=get_bb_opts())
+    chapter_book = StringField('Chapter(/s) of Bible Preached Upon', validators=[DataRequired()])
+    size_sermon = HiddenField('size_sermon')

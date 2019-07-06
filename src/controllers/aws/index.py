@@ -16,8 +16,8 @@ class Aws:
 
         try:
             # get the env variables to try connecting
-            a_id = scripts.get_env_variable('aws_access_key_id')
-            a_k = scripts.get_env_variable('aws_secret_access_key')
+            a_id = scripts.get_env_variable('AWS_ACCESS_KEY_ID')
+            a_k = scripts.get_env_variable('AWS_SECRET_ACCESS_KEY')
 
             # by default, AWS tries to connect using env vars before anything else
             # so see whether that's worked!

@@ -1,6 +1,9 @@
 dev.sh
 test.mp3
 uploads/*
+*.*~
+supervisord*.*
+.vscode/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

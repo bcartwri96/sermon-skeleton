@@ -49,8 +49,8 @@ def upload():
 @login.login_required
 def get_presigned():
     name = request.args.get('file')
-    type = request.args.get('type')
-    return cn.upload.get_presigned(name, type)
+    ty = request.args.get('type')
+    return cn.upload.get_presigned(name, ty)
 
 @app.route("/upload_file", methods=["POST"])
 @login.login_required
@@ -64,6 +64,7 @@ def settings():
     return cn.settings.main()
 
 @app.route("/task_status/<t_id>")
+@login.login_required
 def task_status(t_id):
     return cn.tasks.t_stat(t_id)
 
@@ -72,7 +73,18 @@ def task_status(t_id):
 def sermon(id):
     return cn.index.load_sermon(id)
 
+@app.route("/sermon/edit/<int:id>", methods=['GET', 'POST'])
+@login.login_required
+def edit_sermon(id):
+    return cn.upload.edit_sermon(id)
+
+@app.route("/sermon/delete/<int:id>", methods=['GET'])
+@login.login_required
+def delete_sermon(id):
+    return cn.upload.delete_sermon(id)
+
 @app.route("/test")
+@login.login_required
 def test():
     return cn.index.produce_feeds()
 

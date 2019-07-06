@@ -29,5 +29,7 @@ jinja2 = ">=2.10.1"
 passlib = "*"
 bcrypt = "*"
 psycopg2-binary = "*"
+supervisor = "*"
 
 [dev-packages]
+pylint = "*"

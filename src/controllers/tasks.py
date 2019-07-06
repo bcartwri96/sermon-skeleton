@@ -8,6 +8,43 @@ from datetime import datetime as dt
 import time
 from src.controllers.index import find_unique_id, strip_extension
 
+@cel.task(bind=True)
+def edit_process(self, id, title_given, description, author, date_given, ss, book_bible, chapter_book):
+    self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verifying uploads'})
+    serm = Sermons.query.get(id)
+
+    ss = Sermon_Series.query.get(int(ss))
+    #format date!
+    date_given = dt.strptime(date_given, '%d-%m-%Y')
+
+
+    #get the object for the author
+    author = Authors.query.get(int(author))
+
+    # get the object for the bible book
+    book_bible = Books_Bible.query.get(book_bible)
+
+    # ensure that the title is unique
+    unique = Sermons.query.filter(Sermons.title == title_given).all()
+
+    if len(unique) == 0:
+        serm.title = title_given
+        serm.date_given = date_given
+        serm.description = description
+        serm.author = author
+        serm.sermon_series = ss
+        serm.book_bible = book_bible
+        serm.chapter_book = chapter_book
+
+        session.add(serm)
+        try:
+            session.commit()
+            self.update_state(state='SUCCESS')
+        except KeyError:
+            self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Error with database'})
+            # return False
+    else:
+        self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Title already used!'})
 
 @cel.task(bind=True)
 def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, chapter_book, length):
@@ -20,7 +57,7 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
 
     # get conf
     cfg = cp.ConfigParser()
-    cfg.read('config.ini') # read it in.
+    cfg.read('config.ini')
 
     bucket_name = cfg['MAIN']['AWS_BUCKET_NAME']
     profile_name = cfg['MAIN']['AWS_PROFILE_NAME']
