@@ -42,6 +42,7 @@ def get_author_opts():
     return author_opts
 
 class Login(FlaskForm):
+    email = EmailField('email', validators=[DataRequired()])
     pw = PasswordField('Password', validators=[DataRequired()])
 
 class Upload(FlaskForm):

@@ -10,6 +10,12 @@ import bcrypt
 from flask_login import current_user
 
 def main():
+    # redirect logged in people who aren't admins back away from settings. Only an 
+    # admin can adjust settings.
+    if not current_user.is_admin():
+        fl.flash("Only admins can change settings.")
+        return fl.redirect(fl.url_for('index'))
+    
     fm = Settings()
     if fl.request.method == 'GET':
         return fl.render_template('settings.html', form=fm)

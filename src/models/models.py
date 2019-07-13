@@ -14,11 +14,13 @@ class User(Base):
     name = Column(String(50), unique=True)
     email = Column(String(120), unique=True)
     pw = Column(String(360), nullable=False)
+    role = Column(Integer, nullable=False)
 
-    def __init__(self, name=None, email=None, pw=None):
+    def __init__(self, name=None, email=None, pw=None, role=None):
         self.name = name
         self.email = email
         self.pw = pw
+        self.role = role
 
     def __repr__(self):
         return '<User %r>' % (self.pw)
@@ -27,10 +29,12 @@ class User(Base):
         return self._user.enabled
 
     def is_authenticated(self):
-        return True
+        if self.id != None:
+            return True
+        return False
 
     def is_admin(self):
-        if is_authenticated:
+        if str(self.role) == '1': #admin if 1
             return True
         else:
             return False
@@ -38,7 +42,9 @@ class User(Base):
     def get_id(self):
         # note this is unicode, because python3 is by default.
         return self.id
-
+    
+    def get_role(self):
+        return self.role
 
 class Sermons(Base):
     # NOTE in prod, media_url and pod_id need to be unique. enforcable at db

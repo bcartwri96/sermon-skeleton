@@ -65,9 +65,17 @@ def create_tables():
     import bcrypt
 
     # let's add the admin user
+    role = 1
     pw_hashed = bcrypt.hashpw('1234'.encode('utf-8'), bcrypt.gensalt(12))
-    u = m.User(name="Admin", email="admin", pw=pw_hashed.decode('ascii'))
+    u = m.User(name="Admin", email="admin@email.com", pw=pw_hashed.decode('ascii'), role=role)
     session.add(u)
+
+    # let's add the normal user
+    role = 0
+    pw_hashed = bcrypt.hashpw('5678'.encode('utf-8'), bcrypt.gensalt(12))
+    u = m.User(name="User", email="user@email.com", pw=pw_hashed.decode('ascii'), role=role)
+    session.add(u)
+
 
     # let's add all the books of the bible
     # thanks to jpoehls @ gh.com/jpoehls/bible-metadata for the bible_meta file!

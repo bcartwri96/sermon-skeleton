@@ -63,6 +63,11 @@ def upload_file():
 def settings():
     return cn.settings.main()
 
+@app.route("/admin", methods=["GET", "POST"])
+@login.login_required
+def admin():
+    return cn.admin.index.index()
+
 @app.route("/task_status/<t_id>")
 @login.login_required
 def task_status(t_id):

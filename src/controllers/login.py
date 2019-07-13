@@ -15,25 +15,25 @@ def auth():
         print(str(form.data))
         if form.validate_on_submit():
 
-            # THERE IS ONLY ONE USER, SO SIMPLY GRAB THEIR DETAILS
-            attempt = fl.request.form['pw']
-            pw = User.query.get(1).pw.encode('utf-8')
-            if bcrypt.checkpw(attempt.encode('utf-8'), pw.decode('ascii').encode('utf-8')):
-                login_user(User.query.get(1))
-                fl.flash("Successfully logged in!")
+            email_attempt = fl.request.form['email']
+            pw_attempt = fl.request.form['pw']
 
-            # a = User.query.filter(bcrypt.checkpw(str(User.pw).encode('utf-8'), pw.decode('ascii').encode('utf-8'))).all()
-            # if a != None and len(a) == 1:
-                # login_user(a[0])
-                # fl.flash("Successfully logged in!")
-                # next = fl.request.args.get('next')
-                # if not is_safe_url(next):
-                #     return fl.abort(400)
-
-                return fl.redirect(fl.url_for('index')) #or next
+            # check for email in emails
+            print("EMAIL",email_attempt)
+            ems = User.query.filter(User.email.contains(email_attempt)).all()
+            if len(ems) == 1:
+                pw = ems[0].pw.encode('utf-8')
+                if bcrypt.checkpw(pw_attempt.encode('utf-8'), pw.decode('ascii').encode('utf-8')):
+                    login_user(ems[0])
+                    fl.flash("Successfully logged in!")
+                else:
+                    fl.flash("Admin password not correct :( !")
+                    return fl.render_template("login/in.html", form=form)
             else:
-                fl.flash("Admin password not correct :( !")
+                fl.flash("Login not found (email)")
                 return fl.render_template("login/in.html", form=form)
+
+            return fl.redirect(fl.url_for('index')) #or next
         else:
             fl.flash(str(form.errors))
             return fl.render_template("login/in.html", form=form)

@@ -19,7 +19,7 @@
     </div>
     <a href="{{ url_for('login') }}"><button class="btn btn-outline-secondary" type="button">Admin</button></a>
   </nav>
-{% elif current_user.is_admin %}
+{% elif current_user.is_authenticated() %}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('index') }}">
       <img src="{{ url_for('static', filename='img/ico.ico') }}" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -37,9 +37,16 @@
         <!-- <a class="nav-item nav-link disabled" href="#">Disabled</a> -->
       </div>
     </div>
+    {% if current_user.is_admin() %}
     <span class="navbar-text">
       You are in admin mode
     </span>
+    {% else %}
+    <span class="navbar-text">
+        You are in user mode
+      </span>
+    {% endif %}
+
     <a style="margin-left: 10px;" href="{{ url_for('logout') }}"><button class="btn btn-outline-danger" type="button">Logout</button></a>
   </nav>
 {% endif %}
