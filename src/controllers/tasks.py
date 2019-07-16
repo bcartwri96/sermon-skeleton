@@ -89,7 +89,6 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
         # get the size of the file
         length = a.get_obj_size(filename)
 
-
         if len(unique) == 0:
             new_sermon = Sermons(title = title_given, \
                                  date_given = date_given, \

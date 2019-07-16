@@ -91,12 +91,10 @@ def edit_sermon(id):
         fm.sermon_series.default = s.sermon_series.id
         fm.description.default = s.description    
         fm.process()
-        print("book bible:", fm.book_bible.default)
 
         return fl.render_template('edit_sermon.html', id=id, task_id=0, form=fm, ob=s)
     else:
         if fm.validate_on_submit():
-            print("EDIT POST?")
             title_given = fl.request.form['title']
             date_given = fl.request.form['date_given']
             ss = fl.request.form['sermon_series']

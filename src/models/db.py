@@ -76,7 +76,14 @@ def create_tables():
     u = m.User(name="User", email="user@email.com", pw=pw_hashed.decode('ascii'), role=role)
     session.add(u)
 
-
+    # let's add three congregations
+    n_cong = m.Congregation(name="North")
+    b_cong = m.Congregation(name="Belconnen")
+    c_cong = m.Congregation(name="City")
+    session.add(n_cong)
+    session.add(b_cong)
+    session.add(c_cong)
+    
     # let's add all the books of the bible
     # thanks to jpoehls @ gh.com/jpoehls/bible-metadata for the bible_meta file!
     r = 0

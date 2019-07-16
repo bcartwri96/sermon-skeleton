@@ -68,6 +68,18 @@ def settings():
 def admin():
     return cn.admin.index.index()
 
+@app.route("/add_user", methods=["GET", "POST"])
+@login.login_required
+def add_user():
+    return cn.admin.index.add_user()
+
+@app.route("/remove_user/<int:id>")
+@login.login_required
+def remove_user(id):
+    print("ID", id)
+    return cn.admin.index.remove_user(id)
+
+
 @app.route("/task_status/<t_id>")
 @login.login_required
 def task_status(t_id):

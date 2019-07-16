@@ -1,0 +1,14 @@
+{% include "layout.html" %}
+{% include "header.html" %}
+
+<div class="container">
+  <h4 class="display-4">Add New User</h4>
+
+  <form method="POST" action="{{ url_for('add_user') }}">
+    {{ fm.csrf_token }}
+    {{ fm.name.label}} {{ fm.name(class_="form-control") }}<br>
+    {{ fm.email.label }}{{ fm.email(class_="form-control") }}<br>
+    {{ fm.pw.label }}{{ fm.pw(class_="form-control") }}<br>
+    {{ fm.role.label }}{{ fm.role(class_="form-control") }}<br>
+    <input id="butt" type="submit" value="Add" class="btn btn-primary">
+</form>

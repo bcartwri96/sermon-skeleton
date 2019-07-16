@@ -94,3 +94,9 @@ class Edit_Sermon(FlaskForm):
     choices=get_bb_opts())
     chapter_book = StringField('Chapter(/s) of Bible Preached Upon', validators=[DataRequired()])
     size_sermon = HiddenField('size_sermon')
+
+class Add_User(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired()])
+    pw = PasswordField('Password', validators=[DataRequired()])
+    role = SelectField('Role', coerce=str, choices=[["0", "User"], ["1", "Admin"]], default=0)

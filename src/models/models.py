@@ -71,6 +71,8 @@ class Sermons(Base):
     chapter_book = Column(String(10))
     views = Column(Integer, default=0)
     length = Column(Float)
+    congregation = relationship("congregation")
+    congregation_id = Column(Integer, ForeignKey("congregation.id"))
 
     # define what can be searhed full-text
     search_vector = Column(TSVectorType('title', 'description'))
@@ -79,7 +81,8 @@ class Sermons(Base):
     date_given=None, pod_id=None, pod_media_url=None, pod_logo_url=None, \
     sermon_series=None, sermon_series_id=None, description=None, \
     aws_key_media=None, aws_key_thumb=None, author=None, author_id=None, \
-    views=None, book_bible=None, book_bible_id=None, chapter_book=None, length=None):
+    views=None, book_bible=None, book_bible_id=None, chapter_book=None, length=None, \
+    congregation=None, congregation_id=None):
         self.title = title
         self.description = description
         self.author = author
@@ -99,6 +102,8 @@ class Sermons(Base):
         self.chapter_book = chapter_book
         self.views = views
         self.length = length
+        self.congregation = congregation
+        self.congregation_id = congregation_id
 
 class Authors(Base):
     __tablename__ = 'authors'
@@ -134,3 +139,14 @@ class Books_Bible(Base):
         self.name = name
         self.nickname = nickname
         self.volume = volume
+
+
+class Congregation(Base):
+    __tablename__ = 'congregation'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+
+    def __init__(self, id=None, name=None):
+        self.id = id
+        self.name = name
