@@ -71,7 +71,7 @@ class Sermons(Base):
     chapter_book = Column(String(10))
     views = Column(Integer, default=0)
     length = Column(Float)
-    congregation = relationship("congregation")
+    congregation = relationship("Congregation")
     congregation_id = Column(Integer, ForeignKey("congregation.id"))
 
     # define what can be searhed full-text

@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, ValidationError
 from datetime import date
-from src.models.models import Sermon_Series, Authors, Books_Bible
+from src.models.models import Sermon_Series, Authors, Books_Bible, Congregation
 
 def content_len_check(form, field):
     try:
@@ -24,22 +24,28 @@ def select_field_filled(form, field):
 
 # we need to be able to have a select option
 def get_series():
-    series_opts = [(0, "Select")]
+    series_opts = [(-1, "Select")]
     for ss in Sermon_Series.query.all():
         series_opts.append((ss.id, ss.name))
     return series_opts
 
 def get_bb_opts():
-    books_bible_opts = [(0, "Select")]
+    books_bible_opts = [(-1, "Select")]
     for bb in Books_Bible.query.all():
         books_bible_opts.append((bb.id, bb.name))
     return books_bible_opts
 
 def get_author_opts():
-    author_opts = [(0, "Select")]
+    author_opts = [(-1, "Select")]
     for a in Authors.query.all():
         author_opts.append((a.id, a.name))
     return author_opts
+
+def get_cong_opts():
+    cong_opts = [(-1, "Select")]
+    for c in Congregation.query.all():
+        cong_opts.append((c.id, c.name))
+    return cong_opts
 
 class Login(FlaskForm):
     email = EmailField('email', validators=[DataRequired()])
@@ -50,8 +56,8 @@ class Upload(FlaskForm):
     date_given = DateField('Date', default=date.today(), \
     format='%d-%m-%Y', \
     validators=[DataRequired(message="You need to enter the sermon date")])
-    sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series())
-    author = SelectField('Author', coerce=int, choices=get_author_opts())
+    sermon_series = SelectField('Sermon Series', coerce=int, choices=get_series(), validators=[DataRequired()])
+    author = SelectField('Author', coerce=int, choices=get_author_opts(), validators=[DataRequired()])
     description = TextAreaField('Description', validators=[content_len_check, \
     select_field_filled])
     thumb = FileField('Thumbnail Upload', validators=[
@@ -61,9 +67,10 @@ class Upload(FlaskForm):
     sermon = FileField('Sermon Upload', validators=[
         FileAllowed(['mp3', 'wav'], 'Only mp3 and wav files accepted!')])
     book_bible = SelectField('Book of the Bible', coerce=int, \
-    choices=get_bb_opts())
+    choices=get_bb_opts(), validators=[DataRequired()])
     chapter_book = StringField('Chapter(/s) of Bible Preached Upon', validators=[DataRequired()])
     size_sermon = HiddenField('size_sermon')
+    congregation = SelectField("Congregation", coerce=int, choices=get_cong_opts(), validators=[DataRequired()])
 
 class Settings(FlaskForm):
     add_ss_name = StringField('Add a Sermon Series')
@@ -94,6 +101,8 @@ class Edit_Sermon(FlaskForm):
     choices=get_bb_opts())
     chapter_book = StringField('Chapter(/s) of Bible Preached Upon', validators=[DataRequired()])
     size_sermon = HiddenField('size_sermon')
+    congregation = SelectField("Congregation", coerce=int, choices=get_cong_opts())
+
 
 class Add_User(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])

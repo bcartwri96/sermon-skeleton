@@ -50,6 +50,7 @@ def up():
             sermon_link = fl.request.form['sermon_link']
             thumb_link = fl.request.form['thumb_link']
             length = fl.request.form['size_sermon']
+            cong = fl.request.form['congregation']
 
             # check that filename is not taken, otherwise continue.
             q = Sermons.query.filter(Sermons.title == title_given).all()
@@ -60,7 +61,7 @@ def up():
             # save_to_disk.delay(filename, fname_media)
             upload_a = upload_aws.apply_async(args=[sermon_link, title_given, \
             description, author, date_given, thumb_link, ss, current_user.id, \
-            book_bible, chapter_book, length])
+            book_bible, chapter_book, length, cong])
 
             return fl.render_template('upload.html', form=form, task_id=upload_a.id)
         else:
@@ -89,7 +90,8 @@ def edit_sermon(id):
         fm.book_bible.default = s.book_bible.id
         fm.chapter_book.default = s.chapter_book
         fm.sermon_series.default = s.sermon_series.id
-        fm.description.default = s.description    
+        fm.description.default = s.description
+        fm.congregation.default = s.congregation.id    
         fm.process()
 
         return fl.render_template('edit_sermon.html', id=id, task_id=0, form=fm, ob=s)
@@ -102,8 +104,8 @@ def edit_sermon(id):
             author = fl.request.form['author']
             book_bible = fl.request.form['book_bible']
             chapter_book = fl.request.form['chapter_book']
-            
-            edit_id = edit_process.apply_async(args=[id, title_given, description, author, date_given, ss, book_bible, chapter_book])
+            cong = fl.request.form['congregation']
+            edit_id = edit_process.apply_async(args=[id, title_given, description, author, date_given, ss, book_bible, chapter_book, cong])
 
             # return a HTTP resp.
             return fl.render_template('edit_sermon.html', id=id, task_id=edit_id, form=fm, ob=s)

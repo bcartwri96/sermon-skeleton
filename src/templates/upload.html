@@ -47,6 +47,7 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
       {{ form.sermon_link(id="link_store") }}
       {{ form.book_bible.label }}{{ form.book_bible(class_="form-control") }}<br>
       {{ form.chapter_book.label }}{{ form.chapter_book(class_="form-control") }}<br>
+      {{ form.congregation.label }}{{ form.congregation(class_="form-control") }}<br>
       {{ form.sermon_series.label }} {{ form.sermon_series(class_="form-control") }}<br>
       {{ form.description.label }} {{ form.description(class_="form-control") }}<br>
       {{ form.size_sermon(id="size_sermon") }}
@@ -132,9 +133,10 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
         contentType: false,
         success: function(response){
           console.log("res: "+response);
+
           if(response != 0){
-              $("#img").attr("src",response);
-              $(".preview img").show(); // Display image element
+              // $("#img").attr("src",response);
+              // $(".preview img").show(); // Display image element
           }
 
           // get the size and send it along with the form
@@ -196,9 +198,11 @@ href="{{ url_for('static', filename='css/dropzone-css/basic.min.css') }}" />
         success: function(response){
           console.log("res: "+response);
           if(response != 0){
-              $("#img").attr("src",response);
-              $(".preview img").show(); // Display image element
+              // $("#img").attr("src",response);
+              // $(".preview img").show(); // Display image element
           }
+          // reenable the button
+          butt.disabled = false;
 
         },
         failure: function(resp) {

@@ -1,5 +1,5 @@
 from src.celery_config import cel
-from src.models.models import Sermons, Sermon_Series, Authors, Books_Bible
+from src.models.models import Sermons, Sermon_Series, Authors, Books_Bible, Congregation
 from src.models.db import session
 from src.scripts.index import get_env_variable
 import configparser as cp
@@ -9,14 +9,14 @@ import time
 from src.controllers.index import find_unique_id, strip_extension
 
 @cel.task(bind=True)
-def edit_process(self, id, title_given, description, author, date_given, ss, book_bible, chapter_book):
-    self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verifying uploads'})
+def edit_process(self, id, title_given, description, author, date_given, ss, book_bible, chapter_book, cong):
+    print("Hello!!")
+    self.update_state(state='PROGRESS', meta={'current': 30, 'total': 100, 'status':'Processing'})
     serm = Sermons.query.get(id)
 
     ss = Sermon_Series.query.get(int(ss))
     #format date!
     date_given = dt.strptime(date_given, '%d-%m-%Y')
-
 
     #get the object for the author
     author = Authors.query.get(int(author))
@@ -24,10 +24,13 @@ def edit_process(self, id, title_given, description, author, date_given, ss, boo
     # get the object for the bible book
     book_bible = Books_Bible.query.get(book_bible)
 
+    # get the cong object
+    cong = Congregation.query.get(cong)
+
     # ensure that the title is unique
     unique = Sermons.query.filter(Sermons.title == title_given).all()
 
-    if len(unique) == 0:
+    if len(unique) == 1:
         serm.title = title_given
         serm.date_given = date_given
         serm.description = description
@@ -35,6 +38,7 @@ def edit_process(self, id, title_given, description, author, date_given, ss, boo
         serm.sermon_series = ss
         serm.book_bible = book_bible
         serm.chapter_book = chapter_book
+        serm.congregation = cong
 
         session.add(serm)
         try:
@@ -47,7 +51,7 @@ def edit_process(self, id, title_given, description, author, date_given, ss, boo
         self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Title already used!'})
 
 @cel.task(bind=True)
-def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, chapter_book, length):
+def upload_aws(self, filename, title_given, description, author, date_given, fname_thumb, ss, u_id, book_bible, chapter_book, length, cong):
     # init aws platform
     import src.controllers.aws.index as aws
     import os
@@ -83,6 +87,9 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
         # get the object for the bible book
         book_bible = Books_Bible.query.get(book_bible)
 
+        # get the cong object
+        cong = Congregation.query.get(cong)
+
         # ensure that the title is unique
         unique = Sermons.query.filter(Sermons.title == title_given).all()
 
@@ -99,7 +106,8 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
                                  aws_key_thumb = fname_thumb, \
                                  book_bible = book_bible, \
                                  chapter_book = chapter_book, \
-                                 length = length)
+                                 length = length, \
+                                 congregation=cong)
 
             session.add(new_sermon)
             try:
