@@ -55,6 +55,7 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     # init aws platform
     import src.controllers.aws.index as aws
     import os
+    from src.controllers.index import produce_feeds
 
     self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verifying uploads'})
     # get the profile name and bucket name from config
@@ -74,6 +75,7 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
     if a.get_obj_head(filename) and a.get_obj_head(fname_thumb):
         print("object phase is complete")
         self.update_state(state='PROGRESS', meta={'current': 5, 'total': 100, 'status':'Verified. Processing...'})
+
         date_given = dt.strptime(date_given, '%d-%m-%Y')
 
         # get the object for the sermon series
@@ -112,6 +114,12 @@ def upload_aws(self, filename, title_given, description, author, date_given, fna
             session.add(new_sermon)
             try:
                 session.commit()
+                
+                self.update_state(state='PROGRESS', meta={'current': 85, 'total': 100, 'status':'Reproducing feeds'})
+                
+                # reproduce feeds...
+                # produce_feeds()
+                
                 self.update_state(state='SUCCESS')
             except KeyError:
                 self.update_state(state='FAILURE', meta={'current':0, 'total':100, 'status':'Error with database'})

@@ -33,6 +33,9 @@
         <a class="nav-item nav-link active" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
         <a class="nav-item nav-link" href="{{ url_for('upload') }}">Upload</a>
         <a class="nav-item nav-link" href="{{ url_for('settings') }}">Settings</a>
+        {% if current_user.is_admin() %}
+        <a class="nav-item nav-link" href="{{ url_for('admin') }}">Admin Page</a>
+        {% endif %}
         <a class="nav-item nav-link" href="{{ url_for('search') }}">Search</a>
         <!-- <a class="nav-item nav-link disabled" href="#">Disabled</a> -->
       </div>

@@ -14,18 +14,20 @@
         <td>{{ form.add_author_name.label}}</td>
         <td>{{ form.add_author_name }}</td>
       </tr>
+      {% if current_user.is_admin() %}
       <tr>
         <td>{{ form.thumb_podcast.label}}</td>
         <td>{{ form.thumb_podcast(id="file") }}</td>
       </tr>
       <tr>
-          <td>{{ form.pw.label}}</td>
-          <td>{{ form.pw }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.pw_c.label}}</td>
-            <td>{{ form.pw_c }}</td>
-          </tr>
+        <td>{{ form.pw.label}}</td>
+        <td>{{ form.pw }}</td>
+      </tr>
+      <tr>
+          <td>{{ form.pw_c.label}}</td>
+          <td>{{ form.pw_c }}</td>
+      </tr>
+      {% endif %}
     </table>
     <input type="submit" class="btn btn-primary" value="Submit">
   </form>

@@ -41,7 +41,7 @@ def produce_feeds():
 
     produce_feed(all, links, aws)
 
-    return "Yoiu got it solder"
+    return True
 
 def show_eps():
     # show all the episodes (seen in the view_all page.)

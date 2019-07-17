@@ -21,7 +21,7 @@ def produce_feed(sermons, links, connection):
     from feedgen.feed import FeedGenerator
     from datetime import datetime
     import pytz #lib to make datetime objects timezone aware.
-
+    print("========== PRODUCING FEED! ===========")
     org_name = cf.read_config('MAIN', 'org_name')
     org_email = cf.read_config('MAIN', 'org_email')
     org_link = cf.read_config('MAIN', 'org_link')
